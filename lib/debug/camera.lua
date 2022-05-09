@@ -1,5 +1,18 @@
+local Camera = require 'lib.hump.camera'
+
 -- フリーカメラ
-local FreeCamera = {}
+local Private = {}
+local Public = {}
+
+function Public:getInstance()
+    if Private.instance == nil then
+        Private.instance = Private.new()
+    end
+
+    assert( Private.instance ~= nil, 'GameInstance:getInstance() is not called yet.' )
+    return Private.instance
+end
+
 
 local keyconfigSet = {
     wasd = { { key = 'w' }, { key = 's' }, { key = 'd' }, { key = 'a' } },
@@ -7,52 +20,52 @@ local keyconfigSet = {
     numpad = { { key = 'kp8' }, { key = 'kp2' }, { key = 'kp6' }, { key = 'kp4' } }
 }
 
-function FreeCamera:update( dt )
+function Private:update( dt )
 
 end
 
 
-function FreeCamera:getActive()
+function Private:getActive()
     return self.active
 end
 
 
-function FreeCamera:getPosition()
+function Private:getPosition()
     return self.camera.x, self.camera.y
 end
 
 
-function FreeCamera:attach()
+function Private:attach()
     self.camera:attach()
 end
 
 
-function FreeCamera:detach()
+function Private:detach()
     self.camera:detach()
 end
 
 
-function FreeCamera:toggle()
+function Private:toggle()
     self.active = not self.active
 end
 
 
-function FreeCamera:move( x, y )
+function Private:move( x, y )
     self.camera:move( x, y )
 end
 
 
 -- 初期化処理
-function FreeCamera.new()
+function Private.new()
     local obj = {}
 
     obj.camera = Camera.new()
     obj.active = false
 
-    setmetatable( obj, { __index = FreeCamera } )
+    setmetatable( obj, { __index = Private } )
 
     return obj
 end
 
 
-return FreeCamera
+return Public

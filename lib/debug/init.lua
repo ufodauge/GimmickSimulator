@@ -39,21 +39,21 @@ end
 
 --------------------------------------------------
 -- Class: Debug
-local Debug = {}
-local singleton = nil
+local Private = {}
+local Public = {}
 
-function Debug:getInstance()
-    if singleton == nil then
-        singleton = Debug.new()
+function Public.getInstance()
+    if Private.singleton == nil then
+        Private.singleton = Private.new()
     end
 
-    assert( singleton ~= nil, 'Debug is not initialized.' )
-    return singleton
+    assert( Private.singleton ~= nil, 'Debug is not initialized.' )
+    return Private.singleton
 end
 
 
 -- returns current directory
-function Debug:getCurrentDirectory()
+function Private:getCurrentDirectory()
     local directory = self.list
 
     for i, name in ipairs( self.path ) do
@@ -72,7 +72,7 @@ end
 
 
 -- カーソルの移動
-function Debug:cursorMove( up_down )
+function Private:cursorMove( up_down )
     local dir = self:getCurrentDirectory()
 
     -- カーソルの上への移動
@@ -87,7 +87,7 @@ end
 
 
 -- メニュー遷移処理
-function Debug:movePath( command )
+function Private:movePath( command )
     -- returns current path
     local dir = self:getCurrentDirectory()
 
@@ -109,7 +109,7 @@ function Debug:movePath( command )
 end
 
 
-function Debug:update( dt )
+function Private:update( dt )
     -- デバッグメニューが無効ならば更新しない
     if not self:isValid() then
         return
@@ -125,7 +125,7 @@ function Debug:update( dt )
 end
 
 
-function Debug:draw()
+function Private:draw()
     -- デバッグメニューが無効ならば描画しない
     if not self:isValid() then
         return
@@ -163,36 +163,36 @@ end
 
 
 -- デバッグメニューの有効・無効状態の取得
-function Debug:isValid()
+function Private:isValid()
     return self.valid
 end
 
 
 -- デバッグメニューの表示
-function Debug:activate()
+function Private:activate()
     self.active = true
 end
 
 
 -- デバッグメニューの非表示
-function Debug:deactivate()
+function Private:deactivate()
     self.active = false
 end
 
 
 -- デバッグメニューの表示状態を取得
-function Debug:isActive()
+function Private:isActive()
     return self.active
 end
 
 
-function Debug:setDebugDrawToggler( togglefunc, name )
+function Private:setDebugDrawToggler( togglefunc, name )
     self.debugdrawTogglers = self.debugdrawTogglers or {}
     self.debugdrawTogglers[name] = togglefunc
 end
 
 
-function Debug:toggleDebugDraw()
+function Private:toggleDebugDraw()
     self.debugdrawTogglers = self.debugdrawTogglers or {}
 
     for name, togglefunc in pairs( self.debugdrawTogglers ) do
@@ -201,12 +201,12 @@ function Debug:toggleDebugDraw()
 end
 
 
-function Debug:setDebugInfo( text )
+function Private:setDebugInfo( text )
     table.insert( self.debugTextList, text )
 end
 
 
-function Debug:printDebugInfo()
+function Private:printDebugInfo()
     for index, text in ipairs( self.debugTextList ) do
         printWithShadow( index .. ': ' .. text, DEBUG_INFO_X, DEBUG_INFO_Y + DEBUG_FONT_SIZE * (index - 1) )
     end
@@ -215,32 +215,32 @@ function Debug:printDebugInfo()
 end
 
 
-function Debug:changeFreeCameraConfig( type )
+function Private:changeFreeCameraConfig( type )
     self.freeCamera:changeConfig( type )
 end
 
 
-function Debug:attachFreeCamera()
+function Private:attachFreeCamera()
     self.freeCamera:attach()
 end
 
 
-function Debug:detachFreeCamera()
+function Private:detachFreeCamera()
     self.freeCamera:detach()
 end
 
 
-function Debug:setDebugMode( bool )
+function Private:setDebugMode( bool )
     self.valid = bool
 end
 
 
--- Debug functions
-function Debug.new( valid )
+-- Private functions
+function Private.new( valid )
     local obj = {
-        frameCount = FrameCount.new(),
-        freeCamera = FreeCamera.new(),
-        keyManager = KeyManager.new(),
+        frameCount = FrameCount.getInstance(),
+        freeCamera = FreeCamera.getInstance(),
+        keyManager = KeyManager.getInstance(),
 
         -- インスタンス変数
         -- x, y:        座標
@@ -561,13 +561,10 @@ function Debug.new( valid )
         }
     } )
 
-    setmetatable( obj, { __index = Debug } )
+    setmetatable( obj, { __index = Private } )
 
     return obj
 end
 
 
--- singleton
-singleton = Debug.new()
-
-return Debug
+return Public

@@ -1,3 +1,5 @@
+local Class = require 'lib.30log.30log'
+
 local KeyManager = Class( 'KeyManager' )
 
 local function judge_action_type( action_type )

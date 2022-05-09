@@ -1,45 +1,54 @@
-local FrameCount = {}
+local Private = {}
+local Public = {}
 
-function FrameCount:update( dt )
+function Public:getInstance()
+    if Private.instance == nil then
+        Private.instance = Private.new()
+    end
+
+    assert( Private.instance ~= nil, 'GameInstance:getInstance() is not called yet.' )
+    return Private.instance
+end
+
+
+function Private:update( dt )
     if self.active then
         self.frameCount = self.frameCount + 1
     end
 end
 
 
-function FrameCount:stop()
+function Private:stop()
     self.active = false
 end
 
 
-function FrameCount:start()
+function Private:start()
     self.active = true
 end
 
 
-function FrameCount:getFrame()
+function Private:getFrame()
     return self.frameCount
 end
 
 
-function FrameCount:reset()
+function Private:reset()
     self.frameCount = 0
 end
 
 
 -- 初期化処理
-function FrameCount.new()
+function Private.new()
     local obj = {}
 
     obj.frameCount = 0
     obj.active = true
 
-    setmetatable( obj, { __index = FrameCount } )
+    setmetatable( obj, { __index = Private } )
 
     return obj
 end
 
 
-return FrameCount
-
--- リリース時の処理の追加！！！！
+return Public

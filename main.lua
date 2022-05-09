@@ -5,8 +5,8 @@ local Lovebird = require 'lib.lovebird'
 
 -- independent library
 ---@diagnostic disable-next-line: different-requires
-Class = require 'lib.30log.30log'
-Camera = require 'lib.hump.camera'
+-- Class = require 'lib.30log.30log'
+-- Camera = require 'lib.hump.camera'
 State = require 'lib.hump.gamestate'
 
 ----------------------------------------------------
@@ -19,14 +19,13 @@ States.Sandbox = require 'state.sandbox'
 local PlainDebug = require 'lib.debug'
 
 -- class
-local GameInstance = require 'class.gameinstance'
+local GIManager = require 'class.gimanager'
 -- KeyManager = require 'class.keyManager'
 -- MouseManager = require 'class.mouseManager'
-Player = require 'class.player'
 
 -- instance
 local debug = PlainDebug:getInstance()
-local gameInstance = GameInstance:getInstance()
+local gim = GIManager:getInstance()
 
 function love.load()
     math.randomseed( os.time() )
@@ -35,13 +34,11 @@ function love.load()
     debug:setDebugMode( true )
     -- debug:changeFreeCameraConfig( 'numpad' )
 
-    -- debug:setDebugDrawToggler( GameInstance.toggleDebugMode, 'game_instance' )
-    gameInstance:toggleDebugMode()
-
-    local player = Player( 'MT', NIDHOGG_MT_IMAGE, { x = -350, y = 0 } )
+    -- debug:setDebugDrawToggler( GIManager.toggleDebugMode, 'game_instance' )
+    gim:toggleDebugMode()
 
     State.registerEvents()
-    State.switch( States.Dummy );
+    State.switch( States.Sandbox );
 end
 
 
@@ -51,14 +48,14 @@ function love.update( dt )
     debug:update( dt )
     -- debug
 
-    gameInstance:updateAll( dt )
+    gim:updateAll( dt )
 end
 
 
 function love.draw()
     -- debug
     debug:attachFreeCamera()
-    gameInstance:drawAll()
+    gim:drawAll()
     debug:detachFreeCamera()
 
     -- debug

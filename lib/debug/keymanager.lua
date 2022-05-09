@@ -1,4 +1,15 @@
-local KeyManager = {}
+local Private = {}
+local Public = {}
+
+function Public:getInstance()
+    if Private.instance == nil then
+        Private.instance = Private.new()
+    end
+
+    assert( Private.instance ~= nil, 'GameInstance:getInstance() is not called yet.' )
+    return Private.instance
+end
+
 
 local function judge_action_type( action_type )
 
@@ -19,7 +30,7 @@ end
 -- func:    入力されたときに呼び出される関数
 -- (rep:    リピート入力を有効化するか否か)
 -- (act:    "pressed" or "released")
-function KeyManager:register( properties )
+function Private:register( properties )
     for i, property in ipairs( properties ) do
         -- 引数の確認および修正
         local action_type = property.act or 'pressed'
@@ -47,7 +58,7 @@ function KeyManager:register( properties )
 end
 
 
-function KeyManager:update( dt )
+function Private:update( dt )
     self.pre_process()
 
     for k, keys in pairs( self.key_updator ) do
@@ -84,13 +95,13 @@ end
 
 
 -- for debugging
-function KeyManager:getFrameCount( key )
+function Private:getFrameCount( key )
     return self.key_updator[key].frame_count
 end
 
 
 -- 初期化処理
-function KeyManager.new()
+function Private.new()
     local obj = {}
 
     obj.key_updator = {}
@@ -102,10 +113,10 @@ function KeyManager.new()
     end
 
 
-    setmetatable( obj, { __index = KeyManager } )
+    setmetatable( obj, { __index = Private } )
 
     return obj
 end
 
 
-return KeyManager
+return Public
