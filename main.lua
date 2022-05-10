@@ -19,7 +19,7 @@ States.Sandbox = require 'state.sandbox'
 local PlainDebug = require 'lib.debug'
 
 -- class
-local GIManager = require 'class.gimanager'
+local GIManager = require 'class.gameinstance.manager'
 -- KeyManager = require 'class.keyManager'
 -- MouseManager = require 'class.mouseManager'
 
@@ -30,15 +30,12 @@ local gim = GIManager:getInstance()
 function love.load()
     math.randomseed( os.time() )
 
-    -- デバッグモードの有効化の際は true を渡す
-    debug:setDebugMode( true )
-    -- debug:changeFreeCameraConfig( 'numpad' )
+    debug:enabled()
 
-    -- debug:setDebugDrawToggler( GIManager.toggleDebugMode, 'game_instance' )
     gim:toggleDebugMode()
 
     State.registerEvents()
-    State.switch( States.Sandbox );
+    State.switch( States.Dummy );
 end
 
 

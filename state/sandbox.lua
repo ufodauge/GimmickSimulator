@@ -1,27 +1,23 @@
 local TestInstance = require 'class.testinstance'
-local GIManager = require 'class.gimanager'
+local GIManager = require 'class.gameinstance.manager'
 
 local sandbox = {}
 
 local gim = GIManager:getInstance()
-local test = TestInstance()
+local test = nil
 
 sandbox.name = 'sandbox'
 
-function sandbox:init()
-
-end
-
-
 function sandbox:enter()
-    test:setPosition( 100, -100 )
-    test:setImage( love.graphics.newImage( 'resource/nidhogg/DPSRole.png' ) )
+    local image = love.graphics.newImage( 'resource/nidhogg/DPSRole.png', { mipmaps = true } )
+    image:setFilter( 'nearest', 'nearest' )
 
+    test = TestInstance( { image = image, x = 100, y = -100 } )
 end
 
 
 function sandbox:update( dt )
-    if love.keyboard.isDown( 's' ) then
+    if love.keyboard.isDown( 'p' ) then
         test:delete()
     end
 end

@@ -35,6 +35,59 @@ function Test:init()
     gim:setGameInstance( self )
 
     self.keyManager = KeyManager:new()
+    self.keyManager:addKeys( {
+        {
+            key = 'w',
+            func = function()
+                self:move( 0, 10 )
+            end
+,
+            rep = true,
+            act = 'pressed'
+        },
+        {
+            key = 'd',
+            func = function()
+                self:move( 10, 0 )
+            end
+,
+            rep = true,
+            act = 'pressed'
+        },
+        {
+            key = 's',
+            func = function()
+                self:move( 0, -10 )
+            end
+,
+            rep = true,
+            act = 'pressed'
+        },
+        {
+            key = 'a',
+            func = function()
+                self:move( -10, 0 )
+            end
+,
+            rep = true,
+            act = 'pressed'
+        },
+        {
+            key = 'i',
+            func = function()
+                self:delete()
+            end
+,
+            rep = true,
+            act = 'pressed'
+        }
+    } )
+end
+
+
+function Test:move( x, y )
+    self.x = self.x + x
+    self.y = self.y + y
 end
 
 

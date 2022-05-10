@@ -34,7 +34,7 @@ end
 -- func:    入力されたときに呼び出される関数
 -- (rep:    リピート入力を有効化するか否か)
 -- (act:    "pressed" or "released")
-function KeyManager:register( properties )
+function KeyManager:addKeys( properties )
     for i, property in ipairs( properties ) do
         -- 引数の確認および修正
         local action_type = property.act or 'pressed'

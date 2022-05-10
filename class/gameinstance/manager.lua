@@ -27,7 +27,7 @@ function GameInstanceManager:init()
 end
 
 
-function GameInstanceManager:setGameInstance( obj )
+function GameInstanceManager:add( obj )
     -- マネージャーへの登録
     table.insert( GameInstanceManager.instanceList, obj )
 end
@@ -62,7 +62,7 @@ function GameInstanceManager:updateAll( dt )
 
     -- 消滅しているオブジェクトはリストから除外
     GameInstanceManager.instanceList = filter( GameInstanceManager.instanceList, function( obj )
-        return not obj
+        return obj
     end
  )
 end
@@ -74,14 +74,14 @@ function GameInstanceManager:drawAll()
         if obj.draw then
             love.graphics.setColor( 1, 1, 1, 1 )
 
-            obj.camera:attach()
+            self.camera:attach()
 
             obj:draw()
             if GameInstanceManager.debugMode then
                 obj:debugDraw()
             end
 
-            obj.camera:detach()
+            self.camera:detach()
         end
 
     end

@@ -76,8 +76,10 @@ function GameInstance:draw()
         local x0, y0 = self:getOrigin()
         local w, h = self:getSize()
 
+        local tx, ty = x0 + w / 2, -(y0 + h / 2)
+
         love.graphics.push()
-        love.graphics.translate( x0 + w / 2, y0 + h / 2 )
+        love.graphics.translate( tx, ty )
         love.graphics.scale( self.scale )
         love.graphics.rotate( self.rot )
         love.graphics.setColor( 1, 1, 1, 1 )
@@ -92,8 +94,10 @@ function GameInstance:debugDraw()
     local x, y = self:getPosition()
     local w, h = self:getSize()
 
+    local tx, ty = x0 + w / 2, -(y0 + h / 2)
+
     love.graphics.push()
-    love.graphics.translate( x0 + w / 2, y0 + h / 2 )
+    love.graphics.translate( tx, ty )
     love.graphics.scale( self.scale )
     love.graphics.rotate( self.rot )
     love.graphics.setColor( 1, 0, 0, 1 )
