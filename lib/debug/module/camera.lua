@@ -4,6 +4,28 @@ local Camera = require 'lib.hump.camera'
 local Private = {}
 local Public = {}
 
+local function printOutlined( text, x, y, ... )
+    local args = ...
+    local limit, align = args[1], args[2]
+
+    love.graphics.setColor( 0.2, 0.2, 0.2, 1 )
+    if limit then
+        love.graphics.printf( text, x + 1, y + 1, limit, align )
+        love.graphics.printf( text, x - 1, y + 1, limit, align )
+        love.graphics.printf( text, x + 1, y - 1, limit, align )
+        love.graphics.printf( text, x - 1, y - 1, limit, align )
+        love.graphics.printf( text, x, y, limit, align )
+    else
+        love.graphics.print( text, x + 1, y + 1 )
+        love.graphics.print( text, x - 1, y + 1 )
+        love.graphics.print( text, x + 1, y - 1 )
+        love.graphics.print( text, x - 1, y - 1 )
+        love.graphics.print( text, x, y )
+    end
+    love.graphics.setColor( 1, 1, 1, 1 )
+end
+
+
 function Public:getInstance()
     if Private.instance == nil then
         Private.instance = Private.new()
@@ -32,6 +54,15 @@ end
 
 function Private:getPosition()
     return self.camera.x, self.camera.y
+end
+
+
+function Private:printPosition( x, y )
+    if self:getActive() then
+        local px, py = self:getPosition()
+
+        printOutlined( string.format( 'x: %.2f, y: %.2f', px, py ), x, y )
+    end
 end
 
 

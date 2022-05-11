@@ -1,6 +1,17 @@
 local Private = {}
 local Public = {}
 
+local meta = {}
+function meta:have( key )
+    return self[key] ~= nil
+end
+
+
+local keyrepeatTypes = { 'repeat' }
+local triggerTypes = { 'pressed', 'released' }
+keyrepeatTypes = setmetatable( keyrepeatTypes, { __index = meta } )
+triggerTypes = setmetatable( triggerTypes, { __index = meta } )
+
 function Public:getInstance()
     if Private.instance == nil then
         Private.instance = Private.new()
@@ -11,7 +22,7 @@ function Public:getInstance()
 end
 
 
-local function judge_action_type( action_type )
+local function judgeActionType( action_type )
 
     action_type = action_type or 'pressed'
     if action_type == 'pressed' then
@@ -35,7 +46,7 @@ function Private:register( properties )
         -- 引数の確認および修正
         local action_type = property.act or 'pressed'
         local repeat_type = property.rep and 'repeat' or 'unrepeat'
-        judge_action_type( action_type )
+        judgeActionType( action_type )
 
         self.key_updator[property.key] = self.key_updator[property.key] or {
             key = property.key,
@@ -58,39 +69,61 @@ function Private:register( properties )
 end
 
 
-function Private:update( dt )
-    self.pre_process()
-
-    for k, keys in pairs( self.key_updator ) do
-        -- pressed function
-        if love.keyboard.isDown( keys.key ) then
-            keys.frame_count = keys.frame_count <= 0 and 1 or keys.frame_count + 1
-        else
-            keys.frame_count = keys.frame_count >= 1 and 0 or keys.frame_count - 1
-        end
-
-        -- pressed on the frame
-        if keys.frame_count == 1 and keys.func_pressed_unrepeat then
-            keys.func_pressed_unrepeat( dt )
-        end
-
-        -- pressed before
-        if keys.frame_count >= 1 and keys.func_pressed_repeat then
-            keys.func_pressed_repeat( dt )
-        end
-
-        -- released on the frame
-        if keys.frame_count == 0 and keys.func_released_unrepeat then
-            keys.func_released_unrepeat( dt )
-        end
-
-        -- released before
-        if keys.frame_count <= 0 and keys.func_released_repeat then
-            keys.func_released_repeat( dt )
+-- key:     入力するキー
+-- func:    入力されたときに呼び出される関数
+-- (prem:   前提となるキー)
+-- (rep:    "repeat")
+-- (act:    "pressed" or "released")
+function Private:add( key, func, ... )
+    local args = ...
+    local premisekey = nil
+    local keyrepeat = false
+    local trigger = 'pressed'
+    for index, value in ipairs( args ) do
+        if keyrepeatTypes:have( value ) then
+            keyrepeat = true
+        elseif triggerTypes:have( value ) then
+            trigger = value
+        elseif type( value ) == 'string' then
+            premisekey = value
         end
     end
 
-    self.post_process()
+end
+
+
+function Private:update( dt )
+    for i, key in ipairs( self.keys ) do
+        key:update( dt )
+    end
+    -- for k, keys in pairs( self.key_updator ) do
+    --     -- pressed function
+    --     if love.keyboard.isDown( keys.key ) then
+    --         keys.frame_count = keys.frame_count <= 0 and 1 or keys.frame_count + 1
+    --     else
+    --         keys.frame_count = keys.frame_count >= 1 and 0 or keys.frame_count - 1
+    --     end
+
+    --     -- pressed on the frame
+    --     if keys.frame_count == 1 and keys.func_pressed_unrepeat then
+    --         keys.func_pressed_unrepeat( dt )
+    --     end
+
+    --     -- pressed before
+    --     if keys.frame_count >= 1 and keys.func_pressed_repeat then
+    --         keys.func_pressed_repeat( dt )
+    --     end
+
+    --     -- released on the frame
+    --     if keys.frame_count == 0 and keys.func_released_unrepeat then
+    --         keys.func_released_unrepeat( dt )
+    --     end
+
+    --     -- released before
+    --     if keys.frame_count <= 0 and keys.func_released_repeat then
+    --         keys.func_released_repeat( dt )
+    --     end
+    -- end
 end
 
 

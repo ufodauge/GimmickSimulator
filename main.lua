@@ -19,20 +19,20 @@ States.Sandbox = require 'state.sandbox'
 local PlainDebug = require 'lib.debug'
 
 -- class
-local GIManager = require 'class.gameinstance.manager'
+-- local GIManager = require 'class.gameinstance.manager'
 -- KeyManager = require 'class.keyManager'
 -- MouseManager = require 'class.mouseManager'
 
 -- instance
 local debug = PlainDebug:getInstance()
-local gim = GIManager:getInstance()
+-- local gim = GIManager:getInstance()
 
 function love.load()
     math.randomseed( os.time() )
 
     debug:enabled()
 
-    gim:toggleDebugMode()
+    -- gim:toggleDebugMode()
 
     State.registerEvents()
     State.switch( States.Dummy );
@@ -45,14 +45,14 @@ function love.update( dt )
     debug:update( dt )
     -- debug
 
-    gim:updateAll( dt )
+    -- gim:updateAll( dt )
 end
 
 
 function love.draw()
     -- debug
     debug:attachFreeCamera()
-    gim:drawAll()
+    -- gim:drawAll()
     debug:detachFreeCamera()
 
     -- debug
