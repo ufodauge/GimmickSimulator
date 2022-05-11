@@ -10,8 +10,9 @@ local FreeCamera = require( path .. 'module.camera' )
 local KeyManager = require( path .. 'module.keymanager' )
 local Directory = require( path .. 'module.directory' )
 local File = require( path .. 'module.file' )
+local EntryManager = require( path .. 'module.entrymanager' )
 
-path = path:gsub( '.', '/' )
+path = path:gsub( '%.', '/' )
 -- defines
 local DEBUG_MENU_X = 20
 local DEBUG_MENU_Y = 10
@@ -19,8 +20,6 @@ local DEBUG_INFO_X = 20
 local DEBUG_INFO_Y = 400
 local DEBUG_FRAMECOUNT_X = love.graphics.getWidth() - 200
 local DEBUG_FRAMECOUNT_Y = 5
-local DEBUG_FREECAMERA_X = love.graphics.getWidth() - 200
-local DEBUG_FREECAMERA_Y = 25
 local DEBUG_TEXT_HEIGHT = 16
 local DEBUG_FONT_SIZE = 16
 local DEBUG_FONT = love.graphics.newFont( path .. 'resource/fixedsys-ligatures.ttf', DEBUG_FONT_SIZE )
@@ -125,7 +124,8 @@ end
 
 
 function Debug:printCurrentDirectory( x, y )
-    -- local dir = self:getCurrentDirectory()
+    local directory = self:getCurrentDirectory()
+
 end
 
 
@@ -135,11 +135,9 @@ function Debug:printDebugMenu( x, y )
     end
 
     -- デバッグメニュー
-    self:printCurrentDirectory( x, y )
-    self:printCursor( x, y )
 
-    -- デバッグ情報
-    self:printDebugInfo( x, y )
+    -- self.pointer:printCurrentDirectory( x, y )
+    -- self.pointer:printCursor( x, y )
 end
 
 
@@ -173,23 +171,23 @@ function Debug:draw()
 
     -- デバッグメニュー表示
     self:printDebugMenu( DEBUG_MENU_X, DEBUG_MENU_Y )
+    self:printDebugInfo( DEBUG_INFO_X, DEBUG_INFO_Y )
 
     -- デバッグメニューを表示する
-    if self:isActive() then
-        -- returns current path
-        local dir = self:getCurrentDirectory()
+    -- if self:isActive() then
+    --     -- returns current path
+    --     local dir = self:getCurrentDirectory()
 
-        -- 選択肢の表示
-        for i, content in ipairs( dir ) do
-            printWithShadow( content.name, self.x, self.y + DEBUG_FONT_SIZE * (i - 1) )
+    --     -- 選択肢の表示
+    --     for i, content in ipairs( dir ) do
+    --         printWithShadow( content.name, self.x, self.y + DEBUG_FONT_SIZE * (i - 1) )
 
-            if self.path[#self.path] == i then
-                printWithShadow( '>', self.x - 10, self.y + DEBUG_FONT_SIZE * (i - 1) )
-            end
-        end
-    end
+    --         if self.path[#self.path] == i then
+    --             printWithShadow( '>', self.x - 10, self.y + DEBUG_FONT_SIZE * (i - 1) )
+    --         end
+    --     end
+    -- end
 
-    self:printDebugInfo()
 end
 
 
@@ -266,6 +264,12 @@ function Debug:setDebugMode( bool )
 end
 
 
+function Debug:moveParent()
+    self.pointer = self.pointer:getParent()
+    self.cursor:move( self.pointer:getIndex() )
+end
+
+
 -- Debug functions
 function Debug.new( valid )
     local obj = {
@@ -285,88 +289,91 @@ function Debug.new( valid )
         valid = valid or false,
         active = false,
         debugTextList = {},
-        directory = Directory.new( 'root' ),
+        entryManager = EntryManager.new( Directory.new( 'root' ) ),
         toggle = { frameCount = true, coordinateSystem = true },
-        path = { 'root', 1 }
-
+        pointer = nil
     }
 
     -- ディレクトリ構造
     do
-        obj.directory:add(  --
-        Directory.new( 'toggle' ):add(  --
-        File.new( 'frameCount', function()
+        local root = obj.entryManager:rootDirectory()
+
+        root:add( Directory.new( 'toggle' ) )
+        root:getEntry( 'toggle' ):add( File.new( 'frameCount', function()
             obj.frameCount:toggle()
         end
- ) ):add(  --
-        File.new( 'freeCamera', function()
+ ) )
+        root:getEntry( 'toggle' ):add( File.new( 'freeCamera', function()
             obj.freeCamera:toggle()
         end
- ) ):add(  --
-        File.new( 'return', function()
-            obj:movePath( '..' )
+ ) )
+        root:getEntry( 'toggle' ):add( File.new( 'return', function()
+            obj:moveParent()
         end
- ) ) )
-        obj.directory:add(  --
-        Directory.new( 'framecount' ):add(  --
-        File.new( 'reset', function()
+ ) )
+
+        root:add( Directory.new( 'frameCount' ) )
+        root:getEntry( 'frameCount' ):add( File.new( 'reset', function()
             obj.frameCount:reset()
         end
- ) ):add(  --
-        File.new( 'stop', function()
+ ) )
+        root:getEntry( 'frameCount' ):add( File.new( 'stop', function()
             obj.frameCount:stop()
         end
- ) ):add(  --
-        File.new( 'start', function()
+ ) )
+        root:getEntry( 'frameCount' ):add( File.new( 'start', function()
             obj.frameCount:start()
         end
- ) ):add(  --
-        File.new( 'return', function()
-            obj:movePath( '..' )
-        end
- ) ) )
-        obj.directory:add(  --
-        Directory.new( 'freecamera' ):add(  --
-        Directory.new( 'key config' ):add(  --
-        File.new( 'wasd', function()
+ ) )
+        root:getEntry( 'frameCount' ):add( File.new( 'return' ) )
+
+        root:add( Directory.new( 'freeCamera' ) )
+        root:getEntry( 'freeCamera' ):add( Directory.new( 'keyconfig' ) )
+        root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'wasd', function()
             obj.freeCamera:changeConfig( 'wasd' )
         end
- ) ):add(  --
-        File.new( 'direction key', function()
-            obj.freeCamera:changeConfig( 'direction_key' )
+ ) )
+        root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'dirkey', function()
+            obj.freeCamera:changeConfig( 'dirkey' )
         end
- ) ):add(  --
-        File.new( 'numpad', function()
+ ) )
+        root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'numpad', function()
             obj.freeCamera:changeConfig( 'numpad' )
         end
- ) ):add(  --
-        File.new( 'return', function()
-            obj:movePath( '..' )
+ ) )
+        root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'return', function()
+            obj:moveParent()
         end
- ) ) ):add(  --
-        File.new( 'return', function()
-            obj:movePath( '..' )
-        end
- ) ) )
+ ) )
+        root:getEntry( 'freeCamera' ):add( File.new( 'return' ) )
 
-        local dirState = obj.directory:add( Directory.new( 'state' ) )
-        obj.directory:add(  --
-        dirState )
+        root:add( Directory.new( 'state' ) )
         for j, state in pairs( States ) do
-            dirState:add( File.new( state.name, function()
+            root:getEntry( 'state' ):add( File.new( state.name, function()
                 State.switch( state )
             end
  ) )
         end
-        obj.directory:add( File.new( 'quit', function()
+        root:getEntry( 'state' ):add( File.new( 'return', function()
+            obj:moveParent()
+        end
+ ) )
+
+        root:add( File.new( 'quit', function()
             love.event.quit()
         end
  ) )
-        obj.directory:add( File.new( 'return', function()
-            obj:deactivate()
+
+        root:add( File.new( 'return', function()
+            obj:moveParent()
         end
  ) )
+
+        obj.entryManager:selectEntry( root:getEntry( 'toggle' ) )
     end
+
+    -- 現在指し示しているエントリを設定
+    -- obj.pointer = obj.directory:getEntry( 'toggle' )
 
     -- 操作関数
     do
@@ -376,8 +383,11 @@ function Debug.new( valid )
                 return
             end
 
-            -- 上方向への移動
-            obj:cursorMove( 'up' )
+            -- カーソルの上方向への移動
+            -- ポインタで一つ手前のエントリに移動する
+            obj.entryManager:selectPrevEntry()
+            -- obj.pointer = obj.pointer:prev()
+            -- obj.cursor:move( obj.pointer:getIndex() )
         end
 , 'pressed' )
         obj.keyManager:add( 'pagedown', function()
@@ -387,7 +397,9 @@ function Debug.new( valid )
             end
 
             -- 下方向への移動
-            obj:cursorMove( 'down' )
+            obj.entryManager:selectNextEntry()
+            -- obj.pointer = obj.pointer:next()
+            -- obj.cursor:move( obj.pointer:getIndex() )
         end
 , 'pressed' )
         obj.keyManager:add( 'end', function()
@@ -396,15 +408,17 @@ function Debug.new( valid )
                 return
             end
 
-            -- returns current dir
-            local dir = obj:getCurrentDirectory()
+            -- 最後に選択したものに移動or実行
 
-            -- 決定時の具体的な処理
-            if dir[obj.path[#obj.path]].attribute == 'file' then
-                dir[obj.path[#obj.path]].contents()
-            elseif dir[obj.path[#obj.path]].attribute == 'dir' then
-                obj:movePath( obj.path[#obj.path] )
-            end
+            -- returns current dir
+            obj.entryManager:executeEntry()
+            -- if obj.pointer:isDirectory() then
+            --     obj.pointer = obj.pointer:getEntry()
+            --     obj.cursor:move( obj.pointer:getIndex() )
+            -- else
+            --     obj.pointer:execute()
+            -- end
+
         end
 , 'pressed' )
         obj.keyManager:add( 'home', function()

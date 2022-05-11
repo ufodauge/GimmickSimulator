@@ -3,8 +3,8 @@ local Entry = require( path )
 
 local File = {}
 
-function File:doFunc( func )
-    func()
+function File:execute()
+    self.func()
 end
 
 

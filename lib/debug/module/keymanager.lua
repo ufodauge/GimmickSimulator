@@ -1,3 +1,7 @@
+local path = ...
+path = path:gsub( path:gsub( '(%w+%.)', '' ), '' )
+Keyboard = require( path .. '.keyboard' )
+
 local Private = {}
 local Public = {}
 
@@ -29,24 +33,11 @@ function Private:update( dt )
 end
 
 
--- for debugging
-function Private:getFrameCount( key )
-    return self.key_updator[key].frame_count
-end
-
-
 -- 初期化処理
 function Private.new()
     local obj = {}
 
-    obj.key_updator = {}
-    obj.post_process = function()
-    end
-
-
-    obj.pre_process = function()
-    end
-
+    obj.keys = {}
 
     setmetatable( obj, { __index = Private } )
 
