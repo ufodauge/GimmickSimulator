@@ -1,9 +1,0 @@
-*.dll
-*.exe
-*.bat
-telescope*
-tsc
-bench*
-luacov*
-logo*
-
