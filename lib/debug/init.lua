@@ -3,17 +3,21 @@
 -- Q で表示および非表示を切り替え
 ---------------------------------------
 local path = ... .. '.'
+local syspath = path:gsub( '%.', '/' )
+
+local defaultrequirepath = love.filesystem.getRequirePath()
+love.filesystem.setRequirePath( defaultrequirepath .. ';' .. syspath .. '?.lua' )
 
 -- lib
-local FrameCount = require( path .. 'module.framecount' )
-local FreeCamera = require( path .. 'module.camera' )
-local KeyManager = require( path .. 'module.keymanager' )
-local Directory = require( path .. 'module.directory' )
-local File = require( path .. 'module.file' )
-local EntryManager = require( path .. 'module.entrymanager' )
-local Cursor = require( path .. 'module.cursor' )
+local FrameCount = require( 'module.framecount' )
+local FreeCamera = require( 'module.camera' )
+local KeyManager = require( 'module.keymanager' )
+local Directory = require( 'module.directory' )
+local File = require( 'module.file' )
+local EntryManager = require( 'module.entrymanager' )
+local Cursor = require( 'module.cursor' )
+local printOutlined = require( 'module.utils' ).printOutlined
 
-path = path:gsub( '%.', '/' )
 -- defines
 local DEBUG_MENU_X = 20
 local DEBUG_MENU_Y = 10
@@ -23,34 +27,12 @@ local DEBUG_FRAMECOUNT_X = love.graphics.getWidth() - 200
 local DEBUG_FRAMECOUNT_Y = 5
 local DEBUG_TEXT_HEIGHT = 16
 local DEBUG_FONT_SIZE = 16
-local DEBUG_FONT = love.graphics.newFont( path .. 'resource/fixedsys-ligatures.ttf', DEBUG_FONT_SIZE )
+local DEBUG_FONT = love.graphics.newFont( syspath .. 'resource/fixedsys-ligatures.ttf', DEBUG_FONT_SIZE )
 DEBUG_FONT:setFilter( 'nearest', 'nearest' )
 
 local DEBUG_CAMERA_MOVE_DISTANCE = 5
 
 -- local functions
--- 縁取りテキスト出力
-local function printOutlined( text, x, y, ... )
-    local args = { ... }
-    local limit, align = args[1], args[2]
-
-    love.graphics.setColor( 0.2, 0.2, 0.2, 1 )
-    if limit then
-        love.graphics.printf( text, x + 1, y + 1, limit, align )
-        love.graphics.printf( text, x - 1, y + 1, limit, align )
-        love.graphics.printf( text, x + 1, y - 1, limit, align )
-        love.graphics.printf( text, x - 1, y - 1, limit, align )
-        love.graphics.printf( text, x, y, limit, align )
-    else
-        love.graphics.print( text, x + 1, y + 1 )
-        love.graphics.print( text, x - 1, y + 1 )
-        love.graphics.print( text, x + 1, y - 1 )
-        love.graphics.print( text, x - 1, y - 1 )
-        love.graphics.print( text, x, y )
-    end
-    love.graphics.setColor( 1, 1, 1, 1 )
-end
-
 
 --------------------------------------------------
 -- Class: Debug
@@ -68,7 +50,7 @@ end
 
 
 function Debug:printDebugMenu( x, y )
-    if not self:isActive() then
+    if not self:isMenuShowing() then
         return
     end
 
@@ -81,7 +63,7 @@ end
 
 function Debug:update( dt )
     -- デバッグメニューが無効ならば更新しない
-    if not self:isAvailable() then
+    if not self:isEnabled() then
         return
     end
 
@@ -93,29 +75,30 @@ end
 
 function Debug:draw()
     -- デバッグメニューが無効ならば描画しない
-    if not self:isAvailable() then
+    if not self:isEnabled() then
         return
     end
-
-    love.graphics.setFont( DEBUG_FONT )
 
     -- 現在のフレーム数/FPSを表示する
     love.graphics.push()
     love.graphics.setColor( 1, 1, 1, 1 )
+    love.graphics.setFont( DEBUG_FONT )
     love.graphics.translate( DEBUG_FRAMECOUNT_X, DEBUG_FRAMECOUNT_Y )
     self.frameCount:printFrames( 0, 0 )
     self.frameCount:printFps( 0, 0 + DEBUG_TEXT_HEIGHT )
     self.freeCamera:printCenterPosition( 0, 0 + DEBUG_TEXT_HEIGHT * 2 )
+    love.graphics.setColor( 1, 1, 1, 1 )
     love.graphics.pop()
 
     -- デバッグメニュー表示
+    love.graphics.setFont( DEBUG_FONT )
     self:printDebugMenu( DEBUG_MENU_X, DEBUG_MENU_Y )
     self:printDebugInfo( DEBUG_INFO_X, DEBUG_INFO_Y )
 end
 
 
 -- デバッグメニューの有効・無効状態の取得
-function Debug:isAvailable()
+function Debug:isEnabled()
     return self.available
 end
 
@@ -133,7 +116,7 @@ end
 
 
 -- デバッグメニューの表示状態を取得
-function Debug:isActive()
+function Debug:isMenuShowing()
     return self.showing
 end
 
@@ -181,9 +164,9 @@ end
 -- Debug functions
 function Debug.new( available )
     local obj = {
-        frameCount = FrameCount.getInstance(),
-        freeCamera = FreeCamera.getInstance(),
-        keyManager = KeyManager.getInstance(),
+        frameCount = FrameCount:getInstance(),
+        freeCamera = FreeCamera:getInstance(),
+        keyManager = KeyManager:getInstance(),
 
         -- インスタンス変数
         -- x, y:        座標
@@ -288,7 +271,7 @@ function Debug.new( available )
     do
         obj.keyManager:add( 'pageup', function()
             -- 非表示の際は更新しない
-            if not obj:isActive() then
+            if not obj:isMenuShowing() then
                 return
             end
 
@@ -299,7 +282,7 @@ function Debug.new( available )
 , 'pressed' )
         obj.keyManager:add( 'pagedown', function()
             -- 非表示の際は更新しない
-            if not obj:isActive() then
+            if not obj:isMenuShowing() then
                 return
             end
 
@@ -309,7 +292,7 @@ function Debug.new( available )
 , 'pressed' )
         obj.keyManager:add( 'end', function()
             -- 非表示の際は更新しない
-            if not obj:isActive() then
+            if not obj:isMenuShowing() then
                 return
             end
 
@@ -318,7 +301,7 @@ function Debug.new( available )
         end
 , 'pressed' )
         obj.keyManager:add( 'home', function()
-            if obj:isActive() then
+            if obj:isMenuShowing() then
                 obj:hideDebugMenu()
             else
                 obj:showDebugMenu()

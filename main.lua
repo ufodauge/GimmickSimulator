@@ -56,6 +56,7 @@ function love.draw()
     debug:detachFreeCamera()
 
     -- debug
+    love.graphics.setColor( 1, 1, 1, 1 )
     debug:draw()
     -- debug
 end

@@ -1,30 +1,9 @@
 local Camera = require 'lib.hump.camera'
+local printOutlined = require( 'module.utils' ).printOutlined
 
 -- フリーカメラ
 local Private = {}
 local Public = {}
-
-local function printOutlined( text, x, y, ... )
-    local args = ...
-    local limit, align = args[1], args[2]
-
-    love.graphics.setColor( 0.2, 0.2, 0.2, 1 )
-    if limit then
-        love.graphics.printf( text, x + 1, y + 1, limit, align )
-        love.graphics.printf( text, x - 1, y + 1, limit, align )
-        love.graphics.printf( text, x + 1, y - 1, limit, align )
-        love.graphics.printf( text, x - 1, y - 1, limit, align )
-        love.graphics.printf( text, x, y, limit, align )
-    else
-        love.graphics.print( text, x + 1, y + 1 )
-        love.graphics.print( text, x - 1, y + 1 )
-        love.graphics.print( text, x + 1, y - 1 )
-        love.graphics.print( text, x - 1, y - 1 )
-        love.graphics.print( text, x, y )
-    end
-    love.graphics.setColor( 1, 1, 1, 1 )
-end
-
 
 function Public:getInstance()
     if Private.instance == nil then
@@ -91,7 +70,7 @@ function Private.new()
     local obj = {}
 
     obj.camera = Camera.new()
-    obj.active = false
+    obj.active = true
 
     setmetatable( obj, { __index = Private } )
 

@@ -1,6 +1,4 @@
-local path = ...
-path = path:gsub( path:gsub( '(%w+%.)', '' ), '' )
-Keyboard = require( path .. 'keyboard' )
+Keyboard = require( 'module.keyboard' )
 
 local Private = {}
 local Public = {}

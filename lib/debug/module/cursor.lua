@@ -1,6 +1,4 @@
-local path = ...
-path = path:gsub( path:gsub( '(%w+%.)', '' ), '' )
-local Observer = require( path .. 'observer' )
+local Observer = require( 'module.observer' )
 
 local Cursor = {}
 local Public = {}

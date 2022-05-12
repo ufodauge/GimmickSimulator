@@ -1,8 +1,6 @@
-local path = ...
-path = path:gsub( path:gsub( '(%w+%.)', '' ), '' )
 local Directory = {}
 
-local Entry = require( path .. 'entry' )
+local Entry = require( 'module.entry' )
 setmetatable( Directory, { __index = Entry } )
 
 function Directory:add( entry )

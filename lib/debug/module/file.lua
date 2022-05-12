@@ -1,7 +1,4 @@
-local path = ...
-path = path:gsub( path:gsub( '(%w+%.)', '' ), '' )
-
-local Entry = require( path .. 'entry' )
+local Entry = require( 'module.entry' )
 
 local File = {}
 setmetatable( File, { __index = Entry } )
