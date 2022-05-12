@@ -1,2 +1,0 @@
-local Class = require 'plainclass'
-
