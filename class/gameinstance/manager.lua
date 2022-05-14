@@ -1,5 +1,4 @@
 local Class = require 'lib.30log.30log'
-local Camera = require 'lib.hump.camera'
 
 local GameInstanceManager = Class( 'GameInstanceManager' )
 local Public = {}
@@ -7,7 +6,7 @@ local Public = {}
 GameInstanceManager.instanceList = {}
 GameInstanceManager.debugMode = false
 
-setmetatable( GameInstanceManager.instanceList, { __mode = 'k' } )
+setmetatable( GameInstanceManager.instanceList, { __mode = 'vk' } )
 
 function Public:getInstance()
     if GameInstanceManager.singleton == nil then
@@ -21,15 +20,18 @@ end
 
 function GameInstanceManager:init()
     print( 'GameInstanceManager:init' )
-
-    -- カメラ
-    self.camera = Camera()
 end
 
 
 function GameInstanceManager:add( obj )
     -- マネージャーへの登録
     table.insert( GameInstanceManager.instanceList, obj )
+    local function sort( a, b )
+        return a:drawPriority() < b:drawPriority()
+    end
+
+
+    table.sort( GameInstanceManager.instanceList, sort )
 end
 
 
@@ -46,13 +48,6 @@ end
 
 
 function GameInstanceManager:updateAll( dt )
-    local function sort( a, b )
-        return a.drawPriority < b.drawPriority
-    end
-
-
-    table.sort( GameInstanceManager.instanceList, sort )
-
     for i, obj in pairs( GameInstanceManager.instanceList ) do
         if obj.update then
             obj:update( dt )
@@ -74,29 +69,40 @@ function GameInstanceManager:drawAll()
         if obj.draw then
             love.graphics.setColor( 1, 1, 1, 1 )
 
-            self.camera:attach()
+            obj:attachCamera()
 
             obj:draw()
             if GameInstanceManager.debugMode then
                 obj:debugDraw()
             end
 
-            self.camera:detach()
+            obj:detachCamera()
         end
 
     end
 end
 
 
-function GameInstanceManager:toggleDebugMode()
-    GameInstanceManager.debugMode = not GameInstanceManager.debugMode
+function GameInstanceManager:DebugMode()
+    GameInstanceManager.debugMode = true
+end
+
+
+function GameInstanceManager:deleteInstanceAll()
+    for i, obj in pairs( GameInstanceManager.instanceList ) do
+        obj:delete()
+        obj = nil
+    end
+    GameInstanceManager.instanceList = {}
+    collectgarbage()
 end
 
 
 function GameInstanceManager:delete( obj )
     print( 'GameInstanceManager:delete' )
-    setmetatable( obj, { __mode = 'k' } )
+    obj:delete()
     obj = nil
+    collectgarbage()
 end
 
 

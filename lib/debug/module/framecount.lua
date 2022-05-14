@@ -17,11 +17,11 @@ function Private:update( dt )
     if self.counting then
         self.frames = self.frames + 1
         self.times = self.times + dt
-        -- self.fps = 1 / dt
 
-        if self:getFrame() % 20 == 0 then
+        if self:getFrame() % 60 == 0 then
             self.fps = (self.frames - self.framesbefore20frame) / (self.times - self.timesbefore20frames)
             self.framesbefore20frame = self.frames
+            self.timesbefore20frames = self.times
         end
     end
 end
@@ -82,7 +82,9 @@ function Private.new()
     local obj = {}
 
     obj.frames = 0
+    obj.times = 0
     obj.framesbefore20frame = 0
+    obj.timesbefore20frames = 0
     obj.fps = 0
     obj.counting = true
     obj.active = true

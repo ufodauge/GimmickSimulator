@@ -17,7 +17,7 @@ function Entry:remove()
 end
 
 
-function Entry:prev()
+function Entry:Prev()
     if self.prev then
         return self.prev
     else
@@ -26,7 +26,7 @@ function Entry:prev()
 end
 
 
-function Entry:next()
+function Entry:Next()
     if self.next then
         return self.next
     else
@@ -47,6 +47,11 @@ end
 
 function Entry:execute()
     -- none
+end
+
+
+function Entry:getParent()
+    return self.parent
 end
 
 

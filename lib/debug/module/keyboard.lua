@@ -26,8 +26,9 @@ function Keyboard:update( dt )
 
     -- 前提キーがあるならその押下判定を、ないなら無条件で true
     local premisekeyCondition = self.premisekey and love.keyboard.isDown( self.premisekey ) or true
-    local triggertypeCondition = (self.triggertype == 'pressed' and self.pressedframes > 0) or (self.triggertype == 'released' and self.pressedframes <= 0)
-    local keyrepeattypeCondition = self.keyrepeattype and (self.pressedframes > 1 or self.pressedframes < -1) or true
+    local triggertypeCondition = (self.trigger == 'pressed' and self.pressedframes > 0) or (self.trigger == 'released' and self.pressedframes <= 0)
+    local keyrepeattypeCondition = self.keyrepeat and (self.pressedframes >= 1 or self.pressedframes <= 0) or
+                                       (self.pressedframes == 1 or self.pressedframes == 0)
 
     if premisekeyCondition and triggertypeCondition and keyrepeattypeCondition then
         self.func( dt )
@@ -59,7 +60,9 @@ function Keyboard.new( key, func, ... )
         end
     end
 
-    return setmetatable( obj, { __index = Keyboard } )
+    setmetatable( obj, { __index = Keyboard } )
+
+    return obj
 end
 
 

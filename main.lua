@@ -13,26 +13,22 @@ State = require 'lib.hump.gamestate'
 -- state
 States = {}
 States.Dummy = require 'state.dummy'
-States.Sandbox = require 'state.sandbox'
+-- States.Sandbox = require 'state.sandbox'
 
 -- PlainDebug
-local PlainDebug = require 'lib.debug'
+local PlainDebug = require( 'lib.debug' ):getInstance()
 
 -- class
--- local GIManager = require 'class.gameinstance.manager'
+local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 -- KeyManager = require 'class.keyManager'
 -- MouseManager = require 'class.mouseManager'
-
--- instance
-local debug = PlainDebug:getInstance()
--- local gim = GIManager:getInstance()
 
 function love.load()
     math.randomseed( os.time() )
 
-    debug:Enable()
+    PlainDebug:Enable()
 
-    -- gim:toggleDebugMode()
+    GIManager:DebugMode()
 
     State.registerEvents()
     State.switch( States.Dummy );
@@ -40,25 +36,25 @@ end
 
 
 function love.update( dt )
-    -- debug
+    -- PlainDebug
     Lovebird.update()
-    debug:update( dt )
-    -- debug
+    PlainDebug:update( dt )
+    -- PlainDebug
 
-    -- gim:updateAll( dt )
+    GIManager:updateAll( dt )
 end
 
 
 function love.draw()
-    -- debug
-    debug:attachFreeCamera()
-    -- gim:drawAll()
-    debug:detachFreeCamera()
+    -- PlainDebug
+    PlainDebug:attachFreeCamera()
+    GIManager:drawAll()
+    PlainDebug:detachFreeCamera()
 
-    -- debug
+    -- PlainDebug
     love.graphics.setColor( 1, 1, 1, 1 )
-    debug:draw()
-    -- debug
+    PlainDebug:draw()
+    -- PlainDebug
 end
 
 

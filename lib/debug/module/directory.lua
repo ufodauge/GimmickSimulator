@@ -65,13 +65,8 @@ function Directory:getLast()
 end
 
 
-function Directory:getParent()
-    return self.parent
-end
-
-
 function Directory:execute()
-    return self:getParent()
+    return self
 end
 
 

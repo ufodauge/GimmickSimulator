@@ -1,5 +1,6 @@
-local Camera = require 'lib.hump.camera'
 local printOutlined = require( 'module.utils' ).printOutlined
+
+print( 'debug.init' )
 
 -- フリーカメラ
 local Private = {}
@@ -22,7 +23,6 @@ local keyconfigSet = {
 }
 
 function Private:update( dt )
-
 end
 
 
@@ -32,7 +32,12 @@ end
 
 
 function Private:getPosition()
-    return self.camera.x, self.camera.y
+    return self.x, self.y
+end
+
+
+function Private:setPosition( x, y )
+    self.x, self.y = x, y
 end
 
 
@@ -46,12 +51,15 @@ end
 
 
 function Private:attach()
-    self.camera:attach()
+    love.graphics.push()
+    love.graphics.rotate( -self.rotation )
+    love.graphics.scale( 1 / self.scalex, 1 / self.scaley )
+    love.graphics.translate( -self.x, -self.y )
 end
 
 
 function Private:detach()
-    self.camera:detach()
+    love.graphics.pop()
 end
 
 
@@ -61,7 +69,8 @@ end
 
 
 function Private:move( x, y )
-    self.camera:move( x, y )
+    self.x = self.x + x
+    self.y = self.y + y
 end
 
 
@@ -69,8 +78,13 @@ end
 function Private.new()
     local obj = {}
 
-    obj.camera = Camera.new()
     obj.active = true
+
+    obj.x = 0
+    obj.y = 0
+    obj.scalex = 1
+    obj.scaley = 1
+    obj.rotation = 0
 
     setmetatable( obj, { __index = Private } )
 

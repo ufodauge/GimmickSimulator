@@ -7,7 +7,7 @@ end
 
 function EntryManager:selectPrevEntry()
     if self.selected then
-        self.selected = self.selected:prev()
+        self.selected = self.selected:Prev()
     end
     self:notifyObservers()
 end
@@ -15,7 +15,7 @@ end
 
 function EntryManager:selectNextEntry()
     if self.selected then
-        self.selected = self.selected:next()
+        self.selected = self.selected:Next()
     end
     self:notifyObservers()
 end
@@ -32,8 +32,19 @@ function EntryManager:getCurrent()
 end
 
 
+function EntryManager:moveParent()
+    if self.selected then
+        self.selected = self.selected:getParent()
+        self.current = self.selected:getParent()
+    end
+    self:notifyObservers()
+end
+
+
 function EntryManager:execute()
     self.current = self.selected:execute() or self.current
+    self.selected = (self.current == self.selected) and self.current:getFirst() or self.selected
+    self:notifyObservers()
 end
 
 

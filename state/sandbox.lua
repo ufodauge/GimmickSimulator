@@ -1,17 +1,17 @@
--- local TestInstance = require 'class.testinstance'
--- local GIManager = require 'class.gameinstance.manager'
+local TestInstance = require 'class.testinstance'
+local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 local sandbox = {}
 
--- local gim = GIManager:getInstance()
 local test = nil
 
 sandbox.name = 'sandbox'
 
 function sandbox:enter()
-    -- local image = love.graphics.newImage( 'resource/nidhogg/DPSRole.png', { mipmaps = true } )
-    -- image:setFilter( 'nearest', 'nearest' )
+    local image = love.graphics.newImage( 'resource/nidhogg/DPSRole.png', { mipmaps = true } )
+    image:setFilter( 'nearest', 'nearest' )
 
-    -- test = TestInstance( { image = image, x = 100, y = -100 } )
+    test = TestInstance( { image = image, x = 200, y = 100 } )
+    GIManager:add( test )
 end
 
 
@@ -28,7 +28,7 @@ end
 
 
 function sandbox:leave()
-    -- gim:deleteInstanceAll()
+    GIManager:deleteInstanceAll()
 end
 
 

@@ -6,7 +6,9 @@ local path = ... .. '.'
 local syspath = path:gsub( '%.', '/' )
 
 local defaultrequirepath = love.filesystem.getRequirePath()
-love.filesystem.setRequirePath( defaultrequirepath .. ';' .. syspath .. '?.lua' )
+love.filesystem.setRequirePath( syspath .. '?.lua' .. ';' .. defaultrequirepath )
+
+print( 'require path: ' .. love.filesystem.getRequirePath() )
 
 -- lib
 local FrameCount = require( 'module.framecount' )
@@ -56,7 +58,7 @@ function Debug:printDebugMenu( x, y )
 
     -- デバッグメニュー
     self.entryManager:print( x, y, DEBUG_TEXT_HEIGHT )
-    self.cursor:print( x, y, DEBUG_TEXT_HEIGHT )
+    self.cursor:print( x - 10, y, DEBUG_TEXT_HEIGHT )
 
 end
 
@@ -155,12 +157,6 @@ function Debug:Enable()
 end
 
 
-function Debug:moveParent()
-    self.pointer = self.pointer:getParent()
-    self.cursor:move( self.pointer:getIndex() )
-end
-
-
 -- Debug functions
 function Debug.new( available )
     local obj = {
@@ -200,7 +196,7 @@ function Debug.new( available )
         end
  ) )
         root:getEntry( 'toggle' ):add( File.new( 'return', function()
-            obj:moveParent()
+            obj.entryManager:moveParent()
         end
  ) )
 
@@ -217,27 +213,33 @@ function Debug.new( available )
             obj.frameCount:start()
         end
  ) )
-        root:getEntry( 'frameCount' ):add( File.new( 'return' ) )
+        root:getEntry( 'frameCount' ):add( File.new( 'return', function()
+            obj.entryManager:moveParent()
+        end
+ ) )
 
         root:add( Directory.new( 'freeCamera' ) )
         root:getEntry( 'freeCamera' ):add( Directory.new( 'keyconfig' ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'wasd', function()
-            obj.freeCamera:changeConfig( 'wasd' )
+            -- obj.freeCamera:changeConfig( 'wasd' )
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'dirkey', function()
-            obj.freeCamera:changeConfig( 'dirkey' )
+            -- obj.freeCamera:changeConfig( 'dirkey' )
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'numpad', function()
-            obj.freeCamera:changeConfig( 'numpad' )
+            -- obj.freeCamera:changeConfig( 'numpad' )
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'return', function()
-            obj:moveParent()
+            obj.entryManager:moveParent()
         end
  ) )
-        root:getEntry( 'freeCamera' ):add( File.new( 'return' ) )
+        root:getEntry( 'freeCamera' ):add( File.new( 'return', function()
+            obj.entryManager:moveParent()
+        end
+ ) )
 
         root:add( Directory.new( 'state' ) )
         for j, state in pairs( States ) do
@@ -247,7 +249,7 @@ function Debug.new( available )
  ) )
         end
         root:getEntry( 'state' ):add( File.new( 'return', function()
-            obj:moveParent()
+            obj.entryManager:moveParent()
         end
  ) )
 
@@ -331,5 +333,7 @@ function Debug.new( available )
     return obj
 end
 
+
+love.filesystem.setRequirePath( defaultrequirepath )
 
 return Public
