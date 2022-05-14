@@ -1,6 +1,9 @@
+local path = ...
+path = path:gsub( 'module%..+', '' )
+
 local Entry = {}
 
-local printOutlined = require( 'module.utils' ).printOutlined
+local printOutlined = require( path .. 'module.utils' ).printOutlined
 
 function Entry:getName()
     return self.name

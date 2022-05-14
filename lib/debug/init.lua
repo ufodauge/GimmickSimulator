@@ -3,24 +3,19 @@
 -- Q で表示および非表示を切り替え
 ---------------------------------------
 local path = ... .. '.'
-local syspath = path:gsub( '%.', '/' )
-
-local defaultrequirepath = love.filesystem.getRequirePath()
-love.filesystem.setRequirePath( syspath .. '?.lua' .. ';' .. defaultrequirepath )
-
-print( 'require path: ' .. love.filesystem.getRequirePath() )
 
 -- lib
-local FrameCount = require( 'module.framecount' )
-local FreeCamera = require( 'module.camera' )
-local KeyManager = require( 'module.keymanager' )
-local Directory = require( 'module.directory' )
-local File = require( 'module.file' )
-local EntryManager = require( 'module.entrymanager' )
-local Cursor = require( 'module.cursor' )
-local printOutlined = require( 'module.utils' ).printOutlined
+local FrameCount = require( path .. 'module.framecount' )
+local FreeCamera = require( path .. 'module.camera' )
+local KeyManager = require( path .. 'module.keymanager' )
+local Directory = require( path .. 'module.directory' )
+local File = require( path .. 'module.file' )
+local EntryManager = require( path .. 'module.entrymanager' )
+local Cursor = require( path .. 'module.cursor' )
+local printOutlined = require( path .. 'module.utils' ).printOutlined
 
 -- defines
+local syspath = path:gsub( '%.', '/' )
 local DEBUG_MENU_X = 20
 local DEBUG_MENU_Y = 10
 local DEBUG_INFO_X = 20
@@ -31,6 +26,9 @@ local DEBUG_TEXT_HEIGHT = 16
 local DEBUG_FONT_SIZE = 16
 local DEBUG_FONT = love.graphics.newFont( syspath .. 'resource/fixedsys-ligatures.ttf', DEBUG_FONT_SIZE )
 DEBUG_FONT:setFilter( 'nearest', 'nearest' )
+local DEBUG_CAMERA_KEYCONFIGS_WASD = { 'w', 'a', 's', 'd' }
+local DEBUG_CAMERA_KEYCONFIGS_KEYPAD = { 'kp8', 'kp4', 'kp2', 'kp6' }
+local DEBUG_CAMERA_KEYCONFIGS_DIRKEY = { 'up', 'left', 'down', 'right' }
 
 local DEBUG_CAMERA_MOVE_DISTANCE = 5
 
@@ -177,7 +175,8 @@ function Debug.new( available )
         showing = false,
         debugTextList = {},
         entryManager = EntryManager.new( Directory.new( 'root' ) ),
-        cursor = Cursor:getInstance()
+        cursor = Cursor:getInstance(),
+        cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_KEYPAD
     }
 
     obj.entryManager:addObserver( obj.cursor:getObserver() )
@@ -221,15 +220,15 @@ function Debug.new( available )
         root:add( Directory.new( 'freeCamera' ) )
         root:getEntry( 'freeCamera' ):add( Directory.new( 'keyconfig' ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'wasd', function()
-            -- obj.freeCamera:changeConfig( 'wasd' )
+            obj.cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_WASD
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'dirkey', function()
-            -- obj.freeCamera:changeConfig( 'dirkey' )
+            obj.cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_DIRKEY
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'numpad', function()
-            -- obj.freeCamera:changeConfig( 'numpad' )
+            obj.cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_KEYPAD
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'return', function()
@@ -310,19 +309,19 @@ function Debug.new( available )
             end
         end
 , 'pressed' )
-        obj.keyManager:add( 'kp8', function()
+        obj.keyManager:add( obj.cameraKeyConfig[1], function()
             obj.freeCamera:move( 0, -DEBUG_CAMERA_MOVE_DISTANCE )
         end
 , 'repeat', 'pressed' )
-        obj.keyManager:add( 'kp2', function()
+        obj.keyManager:add( obj.cameraKeyConfig[3], function()
             obj.freeCamera:move( 0, DEBUG_CAMERA_MOVE_DISTANCE )
         end
 , 'repeat', 'pressed' )
-        obj.keyManager:add( 'kp4', function()
+        obj.keyManager:add( obj.cameraKeyConfig[2], function()
             obj.freeCamera:move( -DEBUG_CAMERA_MOVE_DISTANCE, 0 )
         end
 , 'repeat', 'pressed' )
-        obj.keyManager:add( 'kp6', function()
+        obj.keyManager:add( obj.cameraKeyConfig[4], function()
             obj.freeCamera:move( DEBUG_CAMERA_MOVE_DISTANCE, 0 )
         end
 , 'repeat', 'pressed' )
@@ -333,7 +332,5 @@ function Debug.new( available )
     return obj
 end
 
-
-love.filesystem.setRequirePath( defaultrequirepath )
 
 return Public

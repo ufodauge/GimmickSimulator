@@ -1,11 +1,8 @@
-local path = ... .. '.'
-local syspath = path:gsub( '%.', '/' )
-
-local defaultrequirepath = love.filesystem.getRequirePath()
-love.filesystem.setRequirePath( syspath .. '?.lua;' .. defaultrequirepath )
+local path = ...
+path = path .. '.'
 
 local Class = require 'lib.30log.30log'
-local Camera = require( 'module.camera' ):getInstance()
+local Camera = require( path .. 'module.camera' )
 
 local GameInstance = Class( 'GameInstance' )
 
@@ -38,7 +35,7 @@ function GameInstance:init( x, y, drawPriority, image, scale, rot )
         self._height = image and image:getHeight() or 0
     end
 
-    self._camera = Camera
+    self._camera = Camera:getInstance()
 end
 
 
@@ -143,7 +140,5 @@ function GameInstance:delete( obj )
     obj = nil
 end
 
-
-love.filesystem.setRequirePath( defaultrequirepath )
 
 return GameInstance

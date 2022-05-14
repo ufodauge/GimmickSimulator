@@ -1,5 +1,6 @@
 local TestInstance = require 'class.testinstance'
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
+
 local sandbox = {}
 
 local test = nil

@@ -1,6 +1,7 @@
-local printOutlined = require( 'module.utils' ).printOutlined
+local path = ...
+path = path:gsub( 'module%..+', '' )
 
-print( 'debug.init' )
+local printOutlined = require( path .. 'module.utils' ).printOutlined
 
 -- フリーカメラ
 local Private = {}

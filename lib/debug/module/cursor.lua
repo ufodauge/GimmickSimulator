@@ -1,9 +1,11 @@
-local Observer = require( 'module.observer' )
+local path = ...
+path = path:gsub( 'module%..+', '' )
+
+local Observer = require( path .. 'module.observer' )
+local printOutlined = require( path .. 'module.utils' ).printOutlined
 
 local Cursor = {}
 local Public = {}
-
-local printOutlined = require( 'module.utils' ).printOutlined
 
 local instance = nil
 

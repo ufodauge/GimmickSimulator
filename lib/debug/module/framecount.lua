@@ -1,4 +1,7 @@
-local printOutlined = require( 'module.utils' ).printOutlined
+local path = ...
+path = path:gsub( 'module%..+', '' )
+
+local printOutlined = require( path .. 'module.utils' ).printOutlined
 
 local Private = {}
 local Public = {}

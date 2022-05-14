@@ -1,8 +1,6 @@
 ---------------------------------------
 -- Camera
 ---------------------------------------
-print( 'Camera' )
-
 local Class = require 'lib.30log.30log'
 
 local Camera = Class( 'Camera' )
@@ -47,6 +45,17 @@ function Camera:detach()
     if not self:isHUD() then
         love.graphics.pop()
     end
+end
+
+
+function Camera:position()
+    return self._x, self._y
+end
+
+
+function Camera:move( dx, dy )
+    self._x = self._x + dx
+    self._y = self._y + dy
 end
 
 

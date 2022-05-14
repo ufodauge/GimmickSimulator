@@ -1,10 +1,7 @@
-local path = ... .. '.'
-local syspath = path:gsub( '%.', '/' )
+local path = ...
+path = path .. '.'
 
-local defaultrequirepath = love.filesystem.getRequirePath()
-love.filesystem.setRequirePath( syspath .. '?.lua;' .. defaultrequirepath )
-
-Keyboard = require( 'module.keyboard' )
+Keyboard = require( path .. 'module.keyboard' )
 
 local KeyManager = {}
 
@@ -37,7 +34,5 @@ function KeyManager:new()
     return obj
 end
 
-
-love.filesystem.setRequirePath( defaultrequirepath )
 
 return KeyManager

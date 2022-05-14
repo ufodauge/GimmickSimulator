@@ -4,16 +4,13 @@ local Lovebird = require 'lib.lovebird'
 -----------------------------------
 
 -- independent library
----@diagnostic disable-next-line: different-requires
--- Class = require 'lib.30log.30log'
--- Camera = require 'lib.hump.camera'
 State = require 'lib.hump.gamestate'
 
 ----------------------------------------------------
 -- state
 States = {}
 States.Dummy = require 'state.dummy'
--- States.Sandbox = require 'state.sandbox'
+States.Sandbox = require 'state.sandbox'
 
 -- PlainDebug
 local PlainDebug = require( 'lib.debug' ):getInstance()
@@ -31,7 +28,7 @@ function love.load()
     GIManager:DebugMode()
 
     State.registerEvents()
-    State.switch( States.Dummy );
+    State.switch( States.Sandbox );
 end
 
 

@@ -1,4 +1,7 @@
-local Entry = require( 'module.entry' )
+local path = ...
+path = path:gsub( 'module%..+', '' )
+
+local Entry = require( path .. 'module.entry' )
 
 local File = {}
 setmetatable( File, { __index = Entry } )

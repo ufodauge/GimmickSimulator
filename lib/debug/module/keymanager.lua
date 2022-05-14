@@ -1,4 +1,7 @@
-Keyboard = require( 'module.keyboard' )
+local path = ...
+path = path:gsub( 'module%..+', '' )
+
+Keyboard = require( path .. 'module.keyboard' )
 
 local Private = {}
 local Public = {}
