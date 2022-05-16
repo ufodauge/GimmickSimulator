@@ -1,14 +1,12 @@
 ---------------------------------------
 -- Camera
 ---------------------------------------
-local Class = require 'lib.30log.30log'
-
-local Camera = Class( 'Camera' )
+local Camera = {}
 local Public = {}
 
-function Public:getInstance()
+function Public:getInstance( chase, chasingSpeed )
     if Camera.singleton == nil then
-        Camera.singleton = Camera()
+        Camera.singleton = Camera:new( chase, chasingSpeed )
     end
 
     assert( Camera.singleton ~= nil, 'Camera:getInstance() is not called yet.' )
@@ -16,35 +14,17 @@ function Public:getInstance()
 end
 
 
--- Camera functions
-function Camera:init()
-    self._rotation = 0
-    self._scale = 1
-    self._x = 0
-    self._y = 0
-
-    -- HUD ならばカメラ処理に介入しないように設定
-    self._HUD = false
-
-    self._chase = false
-    self._chasingSpeed = 7
-end
-
-
 function Camera:attach()
-    if not self:isHUD() then
-        love.graphics.push()
-        love.graphics.rotate( -self._rotation )
-        love.graphics.scale( 1 / self._scale, 1 / self._scale )
-        love.graphics.translate( -self._x, -self._y )
-    end
+    love.graphics.push()
+    love.graphics.translate( self._cx, self._cy )
+    love.graphics.scale( self._scale )
+    love.graphics.rotate( self._rotation )
+    love.graphics.translate( -self._x, self._y )
 end
 
 
 function Camera:detach()
-    if not self:isHUD() then
-        love.graphics.pop()
-    end
+    love.graphics.pop()
 end
 
 
@@ -59,11 +39,6 @@ function Camera:move( dx, dy )
 end
 
 
-function Camera:isHUD()
-    return self._HUD
-end
-
-
 function Camera:moveTo( x, y )
     local cx, cy = self:position()
     local dx, dy = x - cx, y - cy
@@ -72,6 +47,47 @@ function Camera:moveTo( x, y )
     end
 
     self:move( dx, dy )
+end
+
+
+function Camera:rotate( rot )
+    self._rotation = self._rotation + rot
+end
+
+
+function Camera:rotation()
+    return self._rotation
+end
+
+
+function Camera:zoom( scale )
+    self._scale = self._scale * scale
+end
+
+
+function Camera:setCameraCenter( x, y )
+    self._cx = x
+    self._cy = y
+end
+
+
+-- Camera functions
+function Camera:new( chase, chasingSpeed )
+    local obj = {}
+
+    obj._rotation = 0
+    obj._scale = 1
+    obj._x = 0
+    obj._y = 0
+    obj._cx = love.graphics.getWidth() / 2
+    obj._cy = love.graphics.getHeight() / 2
+
+    obj._chase = chase or false
+    obj._chasingSpeed = chasingSpeed or 7
+
+    setmetatable( obj, { __index = Camera } )
+
+    return obj
 end
 
 

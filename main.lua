@@ -6,11 +6,15 @@ local Lovebird = require 'lib.lovebird'
 -- independent library
 State = require 'lib.hump.gamestate'
 
+-- data
+require 'data.constants'
+
 ----------------------------------------------------
 -- state
 States = {}
 States.Dummy = require 'state.dummy'
 States.Sandbox = require 'state.sandbox'
+States.Sandbox2 = require 'state.sandbox2'
 
 -- PlainDebug
 local PlainDebug = require( 'lib.debug' ):getInstance()
@@ -28,9 +32,8 @@ function love.load()
     GIManager:DebugMode()
 
     State.registerEvents()
-    State.switch( States.Sandbox );
+    State.switch( States.Sandbox2 );
 end
-
 
 function love.update( dt )
     -- PlainDebug
@@ -39,8 +42,11 @@ function love.update( dt )
     -- PlainDebug
 
     GIManager:updateAll( dt )
-end
 
+    if love.keyboard.isDown( 'escape' ) then
+        love.event.quit()
+    end
+end
 
 function love.draw()
     -- PlainDebug
@@ -53,5 +59,4 @@ function love.draw()
     PlainDebug:draw()
     -- PlainDebug
 end
-
 

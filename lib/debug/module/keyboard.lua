@@ -4,7 +4,7 @@ local keyrepeattypes = { 'repeat' }
 local triggertypes = { 'pressed', 'released' }
 
 local meta = {}
-function meta:have( key )
+function meta:has( key )
     for i, k in ipairs( self ) do
         if k == key then
             return true
@@ -37,6 +37,11 @@ function Keyboard:update( dt )
 end
 
 
+function Keyboard:getKey()
+    return self.key
+end
+
+
 function Keyboard.new( key, func, ... )
     local args = { ... }
 
@@ -51,9 +56,9 @@ function Keyboard.new( key, func, ... )
     obj.keyrepeat = false
     obj.trigger = 'pressed'
     for index, value in ipairs( args ) do
-        if keyrepeattypes:have( value ) then
+        if keyrepeattypes:has( value ) then
             obj.keyrepeat = true
-        elseif triggertypes:have( value ) then
+        elseif triggertypes:has( value ) then
             obj.trigger = value
         elseif type( value ) == 'string' then
             obj.premisekey = value

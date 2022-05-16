@@ -1,6 +1,4 @@
-local Class = require 'lib.30log.30log'
-
-local GameInstanceManager = Class( 'GameInstanceManager' )
+local GameInstanceManager = {}
 local Public = {}
 
 GameInstanceManager.instanceList = {}
@@ -17,23 +15,23 @@ function Public:getInstance()
     return GameInstanceManager.singleton
 end
 
+function GameInstanceManager:add( obj, ... )
+    local args = { obj, ... }
+    if #args == 1 then
+        table.insert( GameInstanceManager.instanceList, obj )
+    else
+        for i = 1, #args do
+            table.insert( GameInstanceManager.instanceList, args[i] )
+        end
+    end
 
-function GameInstanceManager:init()
-
-end
-
-
-function GameInstanceManager:add( obj )
     -- マネージャーへの登録
-    table.insert( GameInstanceManager.instanceList, obj )
     local function sort( a, b )
         return a:drawPriority() < b:drawPriority()
     end
 
-
     table.sort( GameInstanceManager.instanceList, sort )
 end
-
 
 local function filter( tbl, func )
     local out = {}
@@ -46,7 +44,6 @@ local function filter( tbl, func )
 
 end
 
-
 function GameInstanceManager:updateAll( dt )
     for i, obj in pairs( GameInstanceManager.instanceList ) do
         if obj.update then
@@ -58,10 +55,8 @@ function GameInstanceManager:updateAll( dt )
     -- 消滅しているオブジェクトはリストから除外
     GameInstanceManager.instanceList = filter( GameInstanceManager.instanceList, function( obj )
         return obj
-    end
- )
+    end )
 end
-
 
 function GameInstanceManager:drawAll()
     for i, obj in pairs( GameInstanceManager.instanceList ) do
@@ -82,11 +77,9 @@ function GameInstanceManager:drawAll()
     end
 end
 
-
 function GameInstanceManager:DebugMode()
     GameInstanceManager.debugMode = true
 end
-
 
 function GameInstanceManager:deleteInstanceAll()
     for i, obj in pairs( GameInstanceManager.instanceList ) do
@@ -97,13 +90,24 @@ function GameInstanceManager:deleteInstanceAll()
     collectgarbage()
 end
 
-
-function GameInstanceManager:delete( obj )
+function GameInstanceManager:deleteInstance( obj )
     print( 'GameInstanceManager:delete' )
     obj:delete()
     obj = nil
     collectgarbage()
 end
 
+function GameInstanceManager:delete()
+    self:deleteInstanceAll()
+    self = nil
+end
+
+function GameInstanceManager:new()
+    local obj = {}
+
+    setmetatable( obj, { __index = GameInstanceManager } )
+
+    return obj
+end
 
 return Public

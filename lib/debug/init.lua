@@ -8,6 +8,7 @@ local path = ... .. '.'
 local FrameCount = require( path .. 'module.framecount' )
 local FreeCamera = require( path .. 'module.camera' )
 local KeyManager = require( path .. 'module.keymanager' )
+local Keyboard = require( path .. 'module.keyboard' )
 local Directory = require( path .. 'module.directory' )
 local File = require( path .. 'module.file' )
 local EntryManager = require( path .. 'module.entrymanager' )
@@ -26,13 +27,15 @@ local DEBUG_TEXT_HEIGHT = 16
 local DEBUG_FONT_SIZE = 16
 local DEBUG_FONT = love.graphics.newFont( syspath .. 'resource/fixedsys-ligatures.ttf', DEBUG_FONT_SIZE )
 DEBUG_FONT:setFilter( 'nearest', 'nearest' )
-local DEBUG_CAMERA_KEYCONFIGS_WASD = { 'w', 'a', 's', 'd' }
-local DEBUG_CAMERA_KEYCONFIGS_KEYPAD = { 'kp8', 'kp4', 'kp2', 'kp6' }
-local DEBUG_CAMERA_KEYCONFIGS_DIRKEY = { 'up', 'left', 'down', 'right' }
 
 local DEBUG_CAMERA_MOVE_DISTANCE = 5
 
--- local functions
+local _resize = love.resize
+function love.resize( w, h )
+    _resize( w, h )
+    DEBUG_FRAMECOUNT_X = love.graphics.getWidth() - 200
+end
+
 
 --------------------------------------------------
 -- Class: Debug
@@ -175,11 +178,83 @@ function Debug.new( available )
         showing = false,
         debugTextList = {},
         entryManager = EntryManager.new( Directory.new( 'root' ) ),
-        cursor = Cursor:getInstance(),
-        cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_KEYPAD
+        cursor = Cursor:getInstance()
     }
 
     obj.entryManager:addObserver( obj.cursor:getObserver() )
+
+    local SelectEntryUp = Keyboard.new( 'pageup', function()
+        -- 非表示の際は更新しない
+        if not obj:isMenuShowing() then
+            return
+        end
+
+        -- カーソルの上方向への移動
+        -- ポインタで一つ手前のエントリに移動する
+        obj.entryManager:selectPrevEntry()
+    end
+, 'pressed' )
+    local SelectEntryDown = Keyboard.new( 'pagedown', function()
+        -- 非表示の際は更新しない
+        if not obj:isMenuShowing() then
+            return
+        end
+
+        -- カーソルの下方向への移動
+        -- ポインタで一つ後のエントリに移動する
+        obj.entryManager:selectNextEntry()
+    end
+, 'pressed' )
+    local SelectEntryExecute = Keyboard.new( 'end', function()
+        -- 非表示の際は更新しない
+        if not obj:isMenuShowing() then
+            return
+        end
+
+        -- 最後に選択したものに移動or実行
+        obj.entryManager:execute()
+    end
+, 'pressed' )
+    local ToggleDebugMenu = Keyboard.new( 'home', function()
+        if obj:isMenuShowing() then
+            obj:hideDebugMenu()
+        else
+            obj:showDebugMenu()
+        end
+    end
+, 'pressed' )
+    local MoveFreeCameraUpWithKeypad = Keyboard.new( 'kp8', function()
+        obj.freeCamera:move( 0, -DEBUG_CAMERA_MOVE_DISTANCE )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraDownWithKeypad = Keyboard.new( 'kp2', function()
+        obj.freeCamera:move( 0, DEBUG_CAMERA_MOVE_DISTANCE )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraLeftWithKeypad = Keyboard.new( 'kp4', function()
+        obj.freeCamera:move( -DEBUG_CAMERA_MOVE_DISTANCE, 0 )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraRightWithKeypad = Keyboard.new( 'kp6', function()
+        obj.freeCamera:move( DEBUG_CAMERA_MOVE_DISTANCE, 0 )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraUpWithArrow = Keyboard.new( 'up', function()
+        obj.freeCamera:move( 0, -DEBUG_CAMERA_MOVE_DISTANCE )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraDownWithArrow = Keyboard.new( 'down', function()
+        obj.freeCamera:move( 0, DEBUG_CAMERA_MOVE_DISTANCE )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraLeftWithArrow = Keyboard.new( 'left', function()
+        obj.freeCamera:move( -DEBUG_CAMERA_MOVE_DISTANCE, 0 )
+    end
+, 'repeat', 'pressed' )
+    local MoveFreeCameraRightWithArrow = Keyboard.new( 'right', function()
+        obj.freeCamera:move( DEBUG_CAMERA_MOVE_DISTANCE, 0 )
+    end
+, 'repeat', 'pressed' )
 
     -- ディレクトリ構造
     do
@@ -219,16 +294,14 @@ function Debug.new( available )
 
         root:add( Directory.new( 'freeCamera' ) )
         root:getEntry( 'freeCamera' ):add( Directory.new( 'keyconfig' ) )
-        root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'wasd', function()
-            obj.cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_WASD
-        end
- ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'dirkey', function()
-            obj.cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_DIRKEY
+            obj.keyManager:remove( MoveFreeCameraUpWithKeypad, MoveFreeCameraDownWithKeypad, MoveFreeCameraLeftWithKeypad, MoveFreeCameraRightWithKeypad )
+            obj.keyManager:add( MoveFreeCameraUpWithArrow, MoveFreeCameraDownWithArrow, MoveFreeCameraLeftWithArrow, MoveFreeCameraRightWithArrow )
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'numpad', function()
-            obj.cameraKeyConfig = DEBUG_CAMERA_KEYCONFIGS_KEYPAD
+            obj.keyManager:remove( MoveFreeCameraUpWithArrow, MoveFreeCameraDownWithArrow, MoveFreeCameraLeftWithArrow, MoveFreeCameraRightWithArrow )
+            obj.keyManager:add( MoveFreeCameraUpWithKeypad, MoveFreeCameraDownWithKeypad, MoveFreeCameraLeftWithKeypad, MoveFreeCameraRightWithKeypad )
         end
  ) )
         root:getEntry( 'freeCamera' ):getEntry( 'keyconfig' ):add( File.new( 'return', function()
@@ -265,66 +338,10 @@ function Debug.new( available )
         obj.entryManager:selectEntry( root:getEntry( 'toggle' ) )
     end
 
-    -- 現在指し示しているエントリを設定
-    -- obj.pointer = obj.directory:getEntry( 'toggle' )
-
     -- 操作関数
     do
-        obj.keyManager:add( 'pageup', function()
-            -- 非表示の際は更新しない
-            if not obj:isMenuShowing() then
-                return
-            end
-
-            -- カーソルの上方向への移動
-            -- ポインタで一つ手前のエントリに移動する
-            obj.entryManager:selectPrevEntry()
-        end
-, 'pressed' )
-        obj.keyManager:add( 'pagedown', function()
-            -- 非表示の際は更新しない
-            if not obj:isMenuShowing() then
-                return
-            end
-
-            -- 下方向への移動
-            obj.entryManager:selectNextEntry()
-        end
-, 'pressed' )
-        obj.keyManager:add( 'end', function()
-            -- 非表示の際は更新しない
-            if not obj:isMenuShowing() then
-                return
-            end
-
-            -- 最後に選択したものに移動or実行
-            obj.entryManager:execute()
-        end
-, 'pressed' )
-        obj.keyManager:add( 'home', function()
-            if obj:isMenuShowing() then
-                obj:hideDebugMenu()
-            else
-                obj:showDebugMenu()
-            end
-        end
-, 'pressed' )
-        obj.keyManager:add( obj.cameraKeyConfig[1], function()
-            obj.freeCamera:move( 0, -DEBUG_CAMERA_MOVE_DISTANCE )
-        end
-, 'repeat', 'pressed' )
-        obj.keyManager:add( obj.cameraKeyConfig[3], function()
-            obj.freeCamera:move( 0, DEBUG_CAMERA_MOVE_DISTANCE )
-        end
-, 'repeat', 'pressed' )
-        obj.keyManager:add( obj.cameraKeyConfig[2], function()
-            obj.freeCamera:move( -DEBUG_CAMERA_MOVE_DISTANCE, 0 )
-        end
-, 'repeat', 'pressed' )
-        obj.keyManager:add( obj.cameraKeyConfig[4], function()
-            obj.freeCamera:move( DEBUG_CAMERA_MOVE_DISTANCE, 0 )
-        end
-, 'repeat', 'pressed' )
+        obj.keyManager:add( ToggleDebugMenu, SelectEntryUp, SelectEntryDown, SelectEntryExecute, MoveFreeCameraUpWithKeypad, MoveFreeCameraDownWithKeypad,
+                            MoveFreeCameraLeftWithKeypad, MoveFreeCameraRightWithKeypad )
     end
 
     setmetatable( obj, { __index = Debug } )

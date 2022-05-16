@@ -1,8 +1,3 @@
-local path = ...
-path = path .. '.'
-
-Keyboard = require( path .. 'module.keyboard' )
-
 local KeyManager = {}
 
 -- key:     入力するキー
@@ -10,8 +5,24 @@ local KeyManager = {}
 -- (prem:   前提となるキー)
 -- (rep:    "repeat")
 -- (act:    "pressed" or "released")
-function KeyManager:add( key, func, ... )
-    table.insert( self.keys, Keyboard.new( key, func, ... ) )
+function KeyManager:add( ... )
+    local keyboards = { ... }
+    for i, keyboard in ipairs( keyboards ) do
+        table.insert( self.keys, keyboard )
+    end
+end
+
+
+function KeyManager:remove( ... )
+    local keyboards = { ... }
+    for i, keyboard in ipairs( keyboards ) do
+        for j, key in ipairs( self.keys ) do
+            if key == keyboard then
+                table.remove( self.keys, j )
+                break
+            end
+        end
+    end
 end
 
 
