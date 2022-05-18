@@ -1,69 +1,43 @@
 local Keyboard = {}
 
-local keyrepeattypes = { 'repeat' }
-local triggertypes = { 'pressed', 'released' }
+local KEY_PRESSED_MAX_FRAME = 600
+local KEY_PRESSED_MIN_FRAME = -600
 
-local meta = {}
-function meta:has( key )
-    for i, k in ipairs( self ) do
-        if k == key then
-            return true
-        end
-    end
-    return false
-end
-
-
-setmetatable( keyrepeattypes, { __index = meta } )
-setmetatable( triggertypes, { __index = meta } )
-
+-- キー操作の種類: 
 function Keyboard:update( dt )
+    --  押下時, 押下から n フレーム後, 押下のち離上時, 離上から n フレーム後
+    -- -127: 無操作
+    -- -126 ~ -1: 離上
+    -- 0: 押下のち離上
+    -- 1 ~ 128: 押下
     if love.keyboard.isDown( self.key ) then
-        self.pressedframes = self.pressedframes <= 0 and 1 or math.min( self.pressedframes + 1, 128 )
+        self.pressedframes = self.pressedframes <= 0 and 1 or math.min( self.pressedframes + 1, KEY_PRESSED_MAX_FRAME )
     else
-        self.pressedframes = self.pressedframes > 0 and 0 or math.max( self.pressedframes - 1, -127 )
+        self.pressedframes = self.pressedframes > 0 and 0 or math.max( self.pressedframes - 1, KEY_PRESSED_MIN_FRAME )
     end
 
     -- 前提キーがあるならその押下判定を、ないなら無条件で true
     local premisekeyCondition = self.premisekey and love.keyboard.isDown( self.premisekey ) or true
-    local triggertypeCondition = (self.trigger == 'pressed' and self.pressedframes > 0) or (self.trigger == 'released' and self.pressedframes <= 0)
-    local keyrepeattypeCondition = self.keyrepeat and (self.pressedframes >= 1 or self.pressedframes <= 0) or
-                                       (self.pressedframes == 1 or self.pressedframes == 0)
 
-    if premisekeyCondition and triggertypeCondition and keyrepeattypeCondition then
-        self.func( dt )
+    if premisekeyCondition then
+        self:func( dt, self.pressedframes )
     end
 
 end
 
-
-function Keyboard:new( key, func, ... )
-    local args = { ... }
-
+function Keyboard:new( key, func, premisekey )
     local obj = {}
 
-    obj.pressedframes = 0
+    obj.pressedframes = KEY_PRESSED_MIN_FRAME
 
     obj.key = key
     obj.func = func
 
-    obj.premisekey = nil
-    obj.keyrepeat = false
-    obj.trigger = 'pressed'
-    for index, value in ipairs( args ) do
-        if keyrepeattypes:has( value ) then
-            obj.keyrepeat = true
-        elseif triggertypes:has( value ) then
-            obj.trigger = value
-        elseif type( value ) == 'string' then
-            obj.premisekey = value
-        end
-    end
+    obj.premisekey = premisekey or nil
 
     setmetatable( obj, { __index = Keyboard } )
 
     return obj
 end
-
 
 return Keyboard

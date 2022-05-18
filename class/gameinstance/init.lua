@@ -29,7 +29,7 @@ function GameInstance:moveCamera( dx, dy )
     self._camera:move( dx, dy )
 end
 
-function GameInstance:cameraPosition()
+function GameInstance:getCameraPosition()
     return self._camera:position()
 end
 
@@ -42,7 +42,7 @@ function GameInstance:rotateCamera( angle )
     self._camera:rotate( angle )
 end
 
-function GameInstance:cameraRotation()
+function GameInstance:getCameraRotation()
     return self._camera:rotation()
 end
 
@@ -50,36 +50,44 @@ function GameInstance:zoomCamera( ds )
     self._camera:zoom( ds )
 end
 
-function GameInstance:cameraZoomScale()
-    return self._camera:zoom()
+function GameInstance:zoomCameraTo( ... )
+    self._camera:zoomTo( ... )
 end
 
-function GameInstance:position()
+function GameInstance:getCameraZoomScale()
+    return self._camera:getZoomScale()
+end
+
+function GameInstance:updateCamera( dt )
+    self._camera:update( dt )
+end
+
+function GameInstance:getPosition()
     return self._x, self._y
 end
 
-function GameInstance:size()
+function GameInstance:getSize()
     return self._width, self._height
 end
 
-function GameInstance:scale()
+function GameInstance:getScale()
     return self._scale
 end
 
-function GameInstance:rotation()
+function GameInstance:getRotation()
     return self._rot
 end
 
 -- オブジェクトの左上の位置を返す
-function GameInstance:origin()
+function GameInstance:getOrigin()
     return self._x - self._width / 2, self._y - self._height / 2
 end
 
-function GameInstance:image()
+function GameInstance:getImage()
     return self._image
 end
 
-function GameInstance:drawPriority()
+function GameInstance:getDrawPriority()
     return self._drawPriority
 end
 
@@ -96,38 +104,42 @@ function GameInstance:rotate( rot )
     self._rot = self._rot + rot
 end
 
+function GameInstance:rotateTo( rot )
+    self._rot = rot
+end
+
 function GameInstance:update( dt )
 
 end
 
 function GameInstance:draw()
-    if self:image() then
-        local x0, y0 = self:origin()
-        local w, h = self:size()
+    if self:getImage() then
+        local x0, y0 = self:getOrigin()
+        local w, h = self:getSize()
 
         local tx, ty = x0 + w / 2, -(y0 + h / 2)
 
         love.graphics.push()
         love.graphics.translate( tx, ty )
-        love.graphics.scale( self:scale() )
-        love.graphics.rotate( self:rotation() )
+        love.graphics.scale( self:getScale() )
+        love.graphics.rotate( -self:getRotation() )
         love.graphics.setColor( 1, 1, 1, 1 )
-        love.graphics.draw( self:image(), -w / 2, -h / 2 )
+        love.graphics.draw( self:getImage(), -w / 2, -h / 2 )
         love.graphics.pop()
     end
 end
 
 function GameInstance:debugDraw()
-    local x0, y0 = self:origin()
-    local x, y = self:position()
-    local w, h = self:size()
+    local x0, y0 = self:getOrigin()
+    local x, y = self:getPosition()
+    local w, h = self:getSize()
 
     local tx, ty = x0 + w / 2, -(y0 + h / 2)
 
     love.graphics.push()
     love.graphics.translate( tx, ty )
-    love.graphics.scale( self:scale() )
-    love.graphics.rotate( self:rotation() )
+    love.graphics.scale( self:getScale() )
+    love.graphics.rotate( -self:getRotation() )
     love.graphics.setColor( 1, 0, 0, 1 )
     love.graphics.rectangle( 'line', -w / 2, -h / 2, w, h )
     love.graphics.setColor( 1, 1, 1, 0.25 )

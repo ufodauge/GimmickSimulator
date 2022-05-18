@@ -7,13 +7,13 @@ function Ground:new( ... )
     local obj = GameInstance:new( ... )
     setmetatable( obj, { __index = Ground } )
 
-    obj._superDelete = obj.delete
+    obj.superDelete = obj.delete
 
     return obj
 end
 
 function Ground:delete()
-    self:_superDelete()
+    self:superDelete()
     self = nil
 end
 

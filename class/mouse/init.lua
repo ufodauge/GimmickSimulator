@@ -1,44 +1,32 @@
 local Mouse = {}
 
-local keyrepeattypes = { 'repeat' }
-local triggertypes = { 'pressed', 'released' }
+local KEY_TYPE_LEFT = 1
+local KEY_TYPE_RIGHT = 2
+local KEY_TYPE_MIDDLE = 3
 
-local meta = {}
-function meta:has( key )
-    for i, k in ipairs( self ) do
-        if k == key then
-            return true
-        end
-    end
-    return false
-end
-
-setmetatable( keyrepeattypes, { __index = meta } )
-setmetatable( triggertypes, { __index = meta } )
+local KEY_PRESSED_MAX_FRAME = 600
+local KEY_PRESSED_MIN_FRAME = -600
 
 function Mouse:update( dt )
     if self.key == 'wheel' then
         if self.wheeldetected then
-            self.func( self.wheelx, self.wheely )
+            self:func( self.wheelx, self.wheely )
             self.wheeldetected = false
             self.wheelx, self.wheely = 0, 0
         end
     else
 
         if love.mouse.isDown( self.key ) then
-            self.pressedframes = self.pressedframes <= 0 and 1 or math.min( self.pressedframes + 1, 128 )
+            self.pressedframes = self.pressedframes <= 0 and 1 or math.min( self.pressedframes + 1, KEY_PRESSED_MAX_FRAME )
         else
-            self.pressedframes = self.pressedframes > 0 and 0 or math.max( self.pressedframes - 1, -127 )
+            self.pressedframes = self.pressedframes > 0 and 0 or math.max( self.pressedframes - 1, KEY_PRESSED_MIN_FRAME )
         end
 
         -- 前提キーがあるならその押下判定を、ないなら無条件で true
         local premisekeyCondition = self.premisekey and love.keyboard.isDown( self.premisekey ) or true
-        local triggertypeCondition = (self.trigger == 'pressed' and self.pressedframes > 0) or (self.trigger == 'released' and self.pressedframes <= 0)
-        local keyrepeattypeCondition = self.keyrepeat and (self.pressedframes >= 1 or self.pressedframes <= 0) or
-                                           (self.pressedframes == 1 or self.pressedframes == 0)
 
-        if premisekeyCondition and triggertypeCondition and keyrepeattypeCondition then
-            self.func( dt )
+        if premisekeyCondition then
+            self:func( dt, self.pressedframes )
         end
     end
 
@@ -49,30 +37,25 @@ function Mouse:updateWheelMoves( x, y )
     self.wheelx, self.wheely = x, y
 end
 
-function Mouse:new( key, func, ... )
-    local args = { ... }
-
+function Mouse:new( key, func, premisekey )
     local obj = {}
 
-    obj.pressedframes = 0
+    obj.pressedframes = KEY_PRESSED_MIN_FRAME
 
-    obj.key = key
+    if key == 'left' then
+        obj.key = KEY_TYPE_LEFT
+    elseif key == 'right' then
+        obj.key = KEY_TYPE_RIGHT
+    elseif key == 'middle' then
+        obj.key = KEY_TYPE_MIDDLE
+    else
+        obj.key = key
+    end
     obj.func = func
     obj.wheeldetected = false
     obj.wheelx, obj.wheely = 0, 0
 
-    obj.premisekey = nil
-    obj.keyrepeat = false
-    obj.trigger = 'pressed'
-    for index, value in ipairs( args ) do
-        if keyrepeattypes:has( value ) then
-            obj.keyrepeat = true
-        elseif triggertypes:has( value ) then
-            obj.trigger = value
-        elseif type( value ) == 'string' then
-            obj.premisekey = value
-        end
-    end
+    obj.premisekey = premisekey or nil
 
     setmetatable( obj, { __index = Mouse } )
 

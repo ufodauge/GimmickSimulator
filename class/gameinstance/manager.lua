@@ -27,7 +27,7 @@ function GameInstanceManager:add( obj, ... )
 
     -- マネージャーへの登録
     local function sort( a, b )
-        return a:drawPriority() < b:drawPriority()
+        return a:getDrawPriority() < b:getDrawPriority()
     end
 
     table.sort( GameInstanceManager.instanceList, sort )

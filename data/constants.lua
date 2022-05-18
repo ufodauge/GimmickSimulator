@@ -21,5 +21,6 @@ GROUND_IMAGE = love.graphics.newImage( 'resource/image/field/nidhogg.png', { mip
 GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
 
 -- Constants
-PLAYER_SPEED = 4
+PLAYER_SPEED = 2.3
+PLAYER_ROT_SPEED = math.pi * 1.5
 PLAYER_CAMERA_TILT = 180

@@ -13,7 +13,6 @@ function Public:getInstance( chase, chasingSpeed )
     return Camera.singleton
 end
 
-
 function Camera:attach()
     love.graphics.push()
     love.graphics.translate( self._cx, self._cy )
@@ -22,22 +21,18 @@ function Camera:attach()
     love.graphics.translate( -self._x, self._y )
 end
 
-
 function Camera:detach()
     love.graphics.pop()
 end
-
 
 function Camera:position()
     return self._x, self._y
 end
 
-
 function Camera:move( dx, dy )
     self._x = self._x + dx
     self._y = self._y + dy
 end
-
 
 function Camera:moveTo( x, y )
     local cx, cy = self:position()
@@ -49,27 +44,36 @@ function Camera:moveTo( x, y )
     self:move( dx, dy )
 end
 
-
 function Camera:rotate( rot )
     self._rotation = self._rotation + rot
 end
-
 
 function Camera:rotation()
     return self._rotation
 end
 
-
-function Camera:zoom( scale )
-    self._scale = self._scale * scale
+function Camera:zoom( rate )
+    self._scale = self._scale * rate
 end
 
+function Camera:zoomTo( scale, smooth, smoothrate )
+    smoothrate = smoothrate or 0.1
+    scale = smooth and self._scale + (scale - self._scale) * smoothrate or scale
+    self._scale = scale
+end
+
+function Camera:getZoomScale()
+    return self._scale
+end
 
 function Camera:setCameraCenter( x, y )
     self._cx = x
     self._cy = y
 end
 
+function Camera:update( dt )
+
+end
 
 -- Camera functions
 function Camera:new( chase, chasingSpeed )
@@ -89,6 +93,5 @@ function Camera:new( chase, chasingSpeed )
 
     return obj
 end
-
 
 return Public
