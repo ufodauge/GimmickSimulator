@@ -23,7 +23,6 @@ function AOE:init( type, display, trigger, settings )
     self.triggeredFrame = 0
 end
 
-
 -- type: 'circle', 'rectangle', 'sector'
 function AOE:setType( type )
     self.type = type
@@ -48,53 +47,43 @@ function AOE:setType( type )
     self.timer = 0
 end
 
-
 function AOE:setPosition( x, y )
     self.x = x
     self.y = y
 end
-
 
 function AOE:setSize( width, height )
     self.width = width
     self.height = height
 end
 
-
 function AOE:setRadius( radius )
     self.radius = radius
 end
-
 
 function AOE:setHole( hole )
     self.hole = hole
 end
 
-
 function AOE:setAngle( angle )
     self.angle = angle
 end
-
 
 function AOE:setRot( rot )
     self.rot = rot
 end
 
-
 function AOE:setEffect( effect )
     self.effect = effect
 end
-
 
 function AOE:setDisplayTiming( display_timing )
     self.display_timing = display_timing
 end
 
-
 function AOE:setTriggerTiming( trigger_timing )
     self.trigger_timing = trigger_timing
 end
-
 
 function AOE:update( dt )
     if self.started then
@@ -110,7 +99,6 @@ function AOE:update( dt )
     end
 
 end
-
 
 function AOE:draw()
     if self.timer >= self.display_timing and self.timer < self.trigger_timing then
@@ -136,7 +124,6 @@ function AOE:draw()
     end
 end
 
-
 function AOE:drawCircle()
     local x, y = self:getPosition()
 
@@ -145,7 +132,6 @@ function AOE:drawCircle()
             love.graphics.circle( 'fill', x, y, self.hole )
         end
 
-
         love.graphics.stencil( stencil, 'replace', 1 )
     end
 
@@ -153,7 +139,6 @@ function AOE:drawCircle()
     love.graphics.circle( 'fill', x, y, self.radius )
     love.graphics.setStencilTest()
 end
-
 
 function AOE:drawRectangle()
     if self.rot and self.rot > 0 then
@@ -166,7 +151,6 @@ function AOE:drawRectangle()
         love.graphics.rectangle( 'fill', self.x - self.width / 2, self.y - self.height / 2, self.width, self.height )
     end
 end
-
 
 -- 検証してない
 function AOE:drawSector()
@@ -183,33 +167,27 @@ function AOE:drawSector()
     end
 end
 
-
 function AOE:start()
     self.timer = 0
     self.started = true
 end
-
 
 function AOE:stop()
     self.timer = 0
     self.started = false
 end
 
-
 function AOE:trigger()
     self.triggeredFrame = self.triggeredFrame + 1
 end
-
 
 function AOE:isTriggering()
     return self.triggeredFrame == 1
 end
 
-
 function AOE:isTriggered()
     return self.triggeredFrame > 0
 end
-
 
 -- 当たり判定が壊れている？
 function AOE:isInTheArea( x, y )
@@ -222,7 +200,6 @@ function AOE:isInTheArea( x, y )
     end
 end
 
-
 function AOE:isInTheCircle( x, y )
     local x, y = self:getPosition()
     local radius = self.radius
@@ -230,14 +207,12 @@ function AOE:isInTheCircle( x, y )
     return (x - self.x) ^ 2 + (y - self.y) ^ 2 <= radius ^ 2
 end
 
-
 function AOE:isInTheRectangle( x, y )
     local x, y = self:getPosition()
     local width, height = self:getSize()
 
     return x >= self.x - width / 2 and x <= self.x + width / 2 and y >= self.y - height / 2 and y <= self.y + height / 2
 end
-
 
 function AOE:isInTheSector( x, y )
     local x, y = self:getPosition()
@@ -261,7 +236,6 @@ function AOE:isInTheSector( x, y )
     return angle >= self.angle and angle <= math.pi * 2 - self.angle
 end
 
-
 -- 当たり判定実装部分ここまで
 
 function AOE:reset()
@@ -269,10 +243,8 @@ function AOE:reset()
     self.triggeredFrame = 0
 end
 
-
 function AOE:delete()
     AOE.super:delete( self ) -- selfを明示的に書いてあげる必要あり
 end
-
 
 return AOE

@@ -156,6 +156,7 @@ function GameInstance:delete()
 end
 
 function GameInstance:new( tbl )
+    tbl = tbl or {}
     local obj = {}
 
     obj._x = tbl.x or 0

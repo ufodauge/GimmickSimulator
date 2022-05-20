@@ -1,21 +1,21 @@
 -- Class
 local GameInstance = require 'class.gameinstance'
 
-local Dummy = {}
-setmetatable( Dummy, { __index = GameInstance } )
+local AoE = {}
+setmetatable( AoE, { __index = GameInstance } )
 
-function Dummy:delete()
+function AoE:delete()
     self:superDelete()
     self = nil
 end
 
-function Dummy:new( args )
+function AoE:new( args )
     local obj = GameInstance:new( args )
 
-    setmetatable( obj, { __index = Dummy } )
+    setmetatable( obj, { __index = AoE } )
     obj.superDelete = obj.delete
 
     return obj
 end
 
-return Dummy
+return AoE

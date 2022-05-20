@@ -7,9 +7,5 @@ function love.conf( t )
 
     t.window.vsync = true
     t.window.resizable = true
-
-    t.window.display = 1
-
 end
-
 

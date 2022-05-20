@@ -16,6 +16,7 @@ function Player:update( dt )
         self:zoomCameraTo( self._zoomScale, true )
     end
 
+    self:move()
     self:updateDirention( dt )
 end
 
@@ -26,7 +27,7 @@ end
 
 -- 付け焼刃実装
 function Player:updateDirention( dt )
-    local diff = self._targetRot - self._rot - math.pi / 2
+    local diff = self._targetrot - self._rot - math.pi / 2
     local amplitude = 0
 
     if diff < -math.pi then
@@ -46,29 +47,45 @@ function Player:updateDirention( dt )
     self:rotateTo( self._rot + amplitude )
 end
 
-function Player:move( x, y )
-    self._x = self._x + x
-    self._y = self._y + y
+function Player:move()
+    local denominator = math.sqrt( self._dx * self._dx + self._dy * self._dy )
+    if denominator == 0 then
+        return
+    end
+
+    self._targetrot = math.atan2( self._dy, self._dx )
+    require( 'lib.debug' ):getInstance():setDebugInfo( self._targetrot, math.atan2( self._dy, self._dx ), self._dy, self._dx )
+
+    local dx = self._dx * PLAYER_SPEED / denominator
+    local dy = self._dy * PLAYER_SPEED / denominator
+
+    self._x = self._x + dx
+    self._y = self._y + dy
+    self._dx, self._dy = 0, 0
 end
 
 function Player:moveForward()
-    self._targetRot = self:getCameraRotation() + math.pi / 2
-    self:move( math.cos( self._targetRot ) * self._speed, math.sin( self._targetRot ) * self._speed )
+    local rot = self:getCameraRotation() + math.pi / 2
+    self._dx = self._dx + math.cos( rot ) * self._speed
+    self._dy = self._dy + math.sin( rot ) * self._speed
 end
 
 function Player:moveBackward()
-    self._targetRot = self:getCameraRotation() - math.pi / 2
-    self:move( math.cos( self._targetRot ) * self._speed, math.sin( self._targetRot ) * self._speed )
+    local rot = self:getCameraRotation() - math.pi / 2
+    self._dx = self._dx + math.cos( rot ) * self._speed
+    self._dy = self._dy + math.sin( rot ) * self._speed
 end
 
 function Player:moveLeft()
-    self._targetRot = self:getCameraRotation() + math.pi
-    self:move( math.cos( self._targetRot ) * self._speed, math.sin( self._targetRot ) * self._speed )
+    local rot = self:getCameraRotation() + math.pi
+    self._dx = self._dx + math.cos( rot ) * self._speed
+    self._dy = self._dy + math.sin( rot ) * self._speed
 end
 
 function Player:moveRight()
-    self._targetRot = self:getCameraRotation()
-    self:move( math.cos( self._targetRot ) * self._speed, math.sin( self._targetRot ) * self._speed )
+    local rot = self:getCameraRotation()
+    self._dx = self._dx + math.cos( rot ) * self._speed
+    self._dy = self._dy + math.sin( rot ) * self._speed
 end
 
 function Player:playable()
@@ -83,23 +100,20 @@ function Player:isPlayable()
     return self._playable
 end
 
-function Player:setNext( player )
-    self._next = player
-end
-
-function Player:new( ... )
-    local obj = GameInstance:new( ... )
+function Player:new( args )
+    local obj = GameInstance:new( args )
 
     setmetatable( obj, { __index = Player } )
     obj.superDelete = obj.delete
 
-    local args = ...
     obj._speed = PLAYER_SPEED
     obj._playable = args.playable or false
     obj._next = args.next
     obj._zoomScale = args.zoomScale or 1
     obj._rot = 0
-    obj._targetRot = math.pi / 2
+    obj._targetrot = math.pi / 2
+    obj._dx = 0
+    obj._dy = 0
 
     local keyW = Keyboard:new( 'w', function( self, dt, f )
         if f > 0 then
@@ -121,14 +135,8 @@ function Player:new( ... )
             obj:moveRight()
         end
     end )
-    local keyG = Keyboard:new( 'g', function( self, dt, f )
-        if f == 0 then
-            obj._next:playable()
-            obj:nonplayable()
-        end
-    end )
     obj._keyManager = KeyManager:new()
-    obj._keyManager:add( keyW, keyS, keyA, keyD, keyG )
+    obj._keyManager:add( keyW, keyS, keyA, keyD )
 
     local mouseLeft = Mouse:new( 'left', function( self, dt, f )
         if f > 0 then
