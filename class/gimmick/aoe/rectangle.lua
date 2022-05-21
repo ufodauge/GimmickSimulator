@@ -27,6 +27,18 @@ function RectangleAoE:isPredicting()
     return self._timer <= self._prediction
 end
 
+function RectangleAoE:calcFadeOpaccity()
+    -- local fadein = -(self._timer - AOE_FADEIN_DURATION)
+    -- local fadeout = (self._timer - self._prediction - AOE_FADEOUT_DURATION)
+    -- if fadein >= 0 then
+    --     self._opacityrate = AOE_FADEIN_DURATION - fadein / AOE_FADEIN_DURATION
+    -- elseif fadeout >= 0 then
+    --     self._opacityrate = AOE_FADEOUT_DURATION - fadeout / AOE_FADEOUT_DURATION
+    -- end
+
+    -- 1 >= rate >= 0
+end
+
 function RectangleAoE:draw()
     local x, y = self:getPosition()
 
@@ -59,11 +71,6 @@ function RectangleAoE:new( args )
 
     assert( args.sx and args.sy and args.tx and args.ty, 'RectangleAoE:new() requires sx, sy, tx, ty' )
 
-    obj._sx = args.sx
-    obj._sy = args.sy
-    obj._tx = args.tx
-    obj._ty = args.ty
-
     obj._x = (args.sx + args.tx) / 2
     obj._y = (args.sy + args.ty) / 2
     obj._rot = math.atan2( args.ty - args.sy, args.tx - args.sx )
@@ -73,6 +80,7 @@ function RectangleAoE:new( args )
     obj._timer = 0 -- AoEが設置されてからの時間
     obj._prediction = args.prediction or 0 -- 予兆が消えるまでの時間
     obj._triggertiming = 0 -- 当たり判定が確定するまでの時間
+    obj._opacityrate = 0 -- 透明度との積を取り、フェードを表現
 
     obj._triggertiming = obj._prediction and obj._prediction + AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED
 
