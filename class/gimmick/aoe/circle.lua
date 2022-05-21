@@ -20,25 +20,33 @@ function CircleAoE:isTriggering()
     return self._timer >= self._triggertiming and self._timer < self._triggertiming + TRIGGERED_AOE_DURATION
 end
 
+function CircleAoE:isPredicting()
+    return self._timer <= self._prediction
+end
+
 function CircleAoE:draw()
     local x, y = self:getPosition()
 
+    love.graphics.push()
     if self:isTriggering() then
         love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g, self._colorTriggering.b, self._colorTriggering.a )
-    else
+    elseif self:isPredicting() then
         love.graphics.setColor( self._color.r, self._color.g, self._color.b, self._color.a )
+    else
+        love.graphics.setColor( 0, 0, 0, 0 )
     end
 
     if self._ir and self._ir > 0 then
         local stencil = function()
-            love.graphics.circle( 'fill', x, y, self._ir )
+            love.graphics.circle( 'fill', x, -y, self._ir )
         end
         love.graphics.stencil( stencil, 'replace', 1 )
     end
 
     love.graphics.setStencilTest( 'equal', 0 )
-    love.graphics.circle( 'fill', x, y, self.radius )
+    love.graphics.circle( 'fill', x, -y, self._r )
     love.graphics.setStencilTest()
+    love.graphics.pop()
 end
 
 function CircleAoE:delete()

@@ -5,6 +5,7 @@ local SequenceManager = require 'class.sequence.manager'
 local Sequence = require 'class.sequence'
 local CircleAoE = require 'class.gimmick.aoe.circle'
 local RectangleAoE = require 'class.gimmick.aoe.rectangle'
+local GimmickManager = require 'class.gimmick.manager'
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 
 local sandbox = {}
@@ -30,14 +31,16 @@ function sandbox:enter()
     playerManager:add( Player:new( { image = PLAYER_IMAGE_D4, drawPriority = 10, x = 350, y = 0 } ) )
 
     gimmickManager = GimmickManager:new()
-
     sequenceManager = SequenceManager:new()
+
+    sequenceManager:addObserver( gimmickManager )
+
     sequenceManager:add( Sequence:new( function()
-        gimmickManager:add( CircleAoE:new( { prediction = 2, x = 100, y = 50, r = 40, ir = 20 } ) )
+        gimmickManager:add( CircleAoE:new( { prediction = 1, x = 200, y = 350, r = 200, ir = 80 } ) )
     end, 1 ) )
     sequenceManager:add( Sequence:new( function()
-        gimmickManager:add( RectangleAoE:new( { prediction = 1, sx = 100, sy = 50, tx = -100, ty = -50, w = 40 } ) )
-    end, 4 ) )
+        gimmickManager:add( RectangleAoE:new( { prediction = 2, sx = -123, sy = -283, tx = 897, ty = 687, w = 100 } ) )
+    end, 3 ) )
 
     GIManager:add( field )
     GIManager:add( playerManager:getPlayers() )

@@ -5,16 +5,6 @@ local SequenceManager = {}
 
 function SequenceManager:update( dt )
     self._keyManager:update( dt )
-    -- for i, sequence in pairs( self._sequences ) do
-
-    --     if sequence:isTriggering() then
-    --         local isPlayerSuffering = sequence:isInTheArea( self._player:getPosition() )
-
-    --         if isPlayerSuffering then
-    --             self._player:hit()
-    --         end
-    --     end
-    -- end
 end
 
 function SequenceManager:start()
@@ -39,6 +29,8 @@ function SequenceManager:reset()
             sequence:reset()
         end
     end
+
+    self:notifyObservers( { name = 'reset' } )
 end
 
 function SequenceManager:started()
@@ -61,25 +53,27 @@ function SequenceManager:getSequences()
     return unpack( self._sequences )
 end
 
--- function SequenceManager:addObserver( observer )
---     table.insert( self._observers, observer )
--- end
+-- observer pattern ----------
+function SequenceManager:addObserver( observer )
+    table.insert( self._observers, observer )
+end
 
--- function SequenceManager:removeObserver( observer )
---     for i, g in pairs( self._observers ) do
---         if g == observer then
---             table.remove( self._observers, i )
---         end
---     end
--- end
+function SequenceManager:removeObserver( observer )
+    for i, g in pairs( self._observers ) do
+        if g == observer then
+            table.remove( self._observers, i )
+        end
+    end
+end
 
--- function SequenceManager:notifyObservers()
---     for i = 1, #self._observers do
---         self._observers[i]:update( self )
---     end
--- end
+function SequenceManager:notifyObservers( event )
+    for i = 1, #self._observers do
+        self._observers[i]:updateObserver( event )
+    end
+end
+-----------------------------
 
-function SequenceManager:delete()
+function SequenceManager:deleteSequences()
     for i, sequence in pairs( self._sequences ) do
         if sequence.delete then
             sequence:delete()
@@ -95,6 +89,7 @@ function SequenceManager:new()
     setmetatable( obj, { __index = SequenceManager } )
 
     obj._sequences = {}
+    obj._observers = {}
     obj._started = false
     obj._player = nil
 

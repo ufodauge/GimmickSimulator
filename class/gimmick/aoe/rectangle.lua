@@ -1,3 +1,6 @@
+-- lib
+local Lume = require 'lib.lume'
+
 -- Class
 local GameInstance = require 'class.gameinstance'
 
@@ -7,13 +10,21 @@ setmetatable( RectangleAoE, { __index = GameInstance } )
 function RectangleAoE:update( dt )
     self._timer = self._timer + dt
 
-    if self._timer >= self.trigger_timing then
+    if self._timer >= self._triggertiming then
         self:trigger()
     end
 end
 
+function RectangleAoE:trigger()
+
+end
+
 function RectangleAoE:isTriggering()
     return self._timer >= self._triggertiming and self._timer < self._triggertiming + TRIGGERED_AOE_DURATION
+end
+
+function RectangleAoE:isPredicting()
+    return self._timer <= self._prediction
 end
 
 function RectangleAoE:draw()
@@ -23,13 +34,15 @@ function RectangleAoE:draw()
 
     if self:isTriggering() then
         love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g, self._colorTriggering.b, self._colorTriggering.a )
-    else
+    elseif self:isPredicting() then
         love.graphics.setColor( self._color.r, self._color.g, self._color.b, self._color.a )
+    else
+        love.graphics.setColor( 0, 0, 0, 0 )
     end
 
-    love.graphics.translate( self._x, self._y )
-    love.graphics.rotate( self._rot )
-    love.graphics.rectangle( 'fill', -self._w / 2, -self._h / 2, self._w, self._h )
+    love.graphics.translate( self._x, -self._y )
+    love.graphics.rotate( -self._rot )
+    love.graphics.rectangle( 'fill', -self._h / 2, -self._w / 2, self._h, self._w )
     love.graphics.pop()
 end
 
@@ -45,6 +58,11 @@ function RectangleAoE:new( args )
     obj.superDelete = obj.delete
 
     assert( args.sx and args.sy and args.tx and args.ty, 'RectangleAoE:new() requires sx, sy, tx, ty' )
+
+    obj._sx = args.sx
+    obj._sy = args.sy
+    obj._tx = args.tx
+    obj._ty = args.ty
 
     obj._x = (args.sx + args.tx) / 2
     obj._y = (args.sy + args.ty) / 2
