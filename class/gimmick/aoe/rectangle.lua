@@ -65,9 +65,9 @@ end
 
 function RectangleAoE:new( args )
     local obj = GameInstance:new( args )
-    setmetatable( obj, { __index = RectangleAoE } )
-
     obj.superDelete = obj.delete
+
+    setmetatable( obj, { __index = RectangleAoE } )
 
     assert( args.sx and args.sy and args.tx and args.ty, 'RectangleAoE:new() requires sx, sy, tx, ty' )
 

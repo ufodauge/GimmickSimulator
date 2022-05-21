@@ -1,3 +1,13 @@
+-- Fonts
+FONT_REGULAR_SIZE = 24
+FONT_HUD_SIZE = 28
+
+FONT_REGULAR = love.graphics.newFont( 'resource/font/PixelMplus12-Regular.ttf', FONT_REGULAR_SIZE )
+FONT_HUD = love.graphics.newFont( 'resource/font/YuGothM.ttc', FONT_HUD_SIZE )
+
+FONT_REGULAR:setFilter( 'nearest', 'nearest' )
+FONT_HUD:setFilter( 'nearest', 'nearest' )
+
 -- Image
 PLAYER_IMAGE_MT = love.graphics.newImage( 'resource/image/player/mt.png', { mipmaps = true } )
 PLAYER_IMAGE_ST = love.graphics.newImage( 'resource/image/player/st.png', { mipmaps = true } )
@@ -17,8 +27,36 @@ PLAYER_IMAGE_D2:setFilter( 'nearest', 'nearest' )
 PLAYER_IMAGE_D3:setFilter( 'nearest', 'nearest' )
 PLAYER_IMAGE_D4:setFilter( 'nearest', 'nearest' )
 
-GROUND_IMAGE = love.graphics.newImage( 'resource/image/field/nidhogg.png', { mipmaps = true } )
-GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
+-- field image
+NIDHOGG_GROUND_IMAGE = love.graphics.newImage( 'resource/image/field/nidhogg.png', { mipmaps = true } )
+WOTH_GROUND_IMAGE = love.graphics.newImage( 'resource/image/field/warthoftheheavens.png', { mipmaps = true } )
+
+NIDHOGG_GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
+WOTH_GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
+
+-- objects
+WOTH_WARRIOR_IMAGE = love.graphics.newImage( 'resource/image/object/warrior.png', { mipmaps = true } )
+WOTH_SOLIDER_IMAGE = love.graphics.newImage( 'resource/image/object/lancer.png', { mipmaps = true } )
+WOTH_DRAGON_IMAGE = love.graphics.newImage( 'resource/image/object/dragon.png', { mipmaps = true } )
+WOTH_THORDAN_IMAGE = love.graphics.newImage( 'resource/image/object/thordan.png', { mipmaps = true } )
+
+WOTH_WARRIOR_IMAGE:setFilter( 'nearest', 'nearest' )
+WOTH_SOLIDER_IMAGE:setFilter( 'nearest', 'nearest' )
+WOTH_DRAGON_IMAGE:setFilter( 'nearest', 'nearest' )
+WOTH_THORDAN_IMAGE:setFilter( 'nearest', 'nearest' )
+
+-- HUD
+HUD_SPELLGAUGE_BASE_IMAGE = love.graphics.newImage( 'resource/image/hud/spellgaugebase.png', { mipmaps = true } )
+HUD_SPELLGAUGE_SPELL_IMAGE = love.graphics.newImage( 'resource/image/hud/spellgauge.png', { mipmaps = true } )
+
+HUD_SPELLGAUGE_BASE_IMAGE:setFilter( 'nearest', 'nearest' )
+HUD_SPELLGAUGE_SPELL_IMAGE:setFilter( 'nearest', 'nearest' )
+
+HUD_SPELLGAUGE_BASE_IMAGE_X = 100
+HUD_SPELLGAUGE_BASE_IMAGE_Y = 100
+
+HUD_SPELLGAUGE_SPELL_IMAGE_RELATED_TO_BASE_X = 13
+HUD_SPELLGAUGE_SPELL_IMAGE_RELATED_TO_BASE_Y = 13
 
 -- Constants
 PLAYER_SPEED = 2.5

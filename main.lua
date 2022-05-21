@@ -21,8 +21,6 @@ local PlainDebug = require( 'lib.debug' ):getInstance()
 
 -- class
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
--- KeyManager = require 'class.keyManager'
--- MouseManager = require 'class.mouseManager'
 
 function love.load()
     math.randomseed( os.time() )

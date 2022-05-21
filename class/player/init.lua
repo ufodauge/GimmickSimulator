@@ -54,7 +54,6 @@ function Player:move()
     end
 
     self._targetrot = math.atan2( self._dy, self._dx )
-    require( 'lib.debug' ):getInstance():setDebugInfo( self._targetrot, math.atan2( self._dy, self._dx ), self._dy, self._dx )
 
     local dx = self._dx * PLAYER_SPEED / denominator
     local dy = self._dy * PLAYER_SPEED / denominator
@@ -102,9 +101,9 @@ end
 
 function Player:new( args )
     local obj = GameInstance:new( args )
+    obj.superDelete = obj.delete
 
     setmetatable( obj, { __index = Player } )
-    obj.superDelete = obj.delete
 
     obj._speed = PLAYER_SPEED
     obj._playable = args.playable or false

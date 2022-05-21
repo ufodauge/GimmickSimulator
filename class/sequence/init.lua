@@ -52,9 +52,9 @@ end
 
 function Sequence:new( func, timing, args )
     local obj = GameInstance:new( args )
-    setmetatable( obj, { __index = Sequence } )
-
     obj.superDelete = obj.delete
+
+    setmetatable( obj, { __index = Sequence } )
 
     obj._func = func
     obj._timer = 0

@@ -56,9 +56,9 @@ end
 
 function CircleAoE:new( args )
     local obj = GameInstance:new( args )
-    setmetatable( obj, { __index = CircleAoE } )
-
     obj.superDelete = obj.delete
+
+    setmetatable( obj, { __index = CircleAoE } )
 
     obj._x = args.x or 0
     obj._y = args.y or 0

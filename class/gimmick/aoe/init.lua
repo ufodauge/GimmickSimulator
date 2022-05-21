@@ -11,9 +11,9 @@ end
 
 function AoE:new( args )
     local obj = GameInstance:new( args )
+    obj.superDelete = obj.delete
 
     setmetatable( obj, { __index = AoE } )
-    obj.superDelete = obj.delete
 
     return obj
 end

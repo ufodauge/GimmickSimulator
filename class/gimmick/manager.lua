@@ -1,3 +1,6 @@
+local Timer = require( 'lib.timer' ):new()
+-- local Timer = require( 'lib.hump.timer' ).new()
+
 local KeyManager = require 'class.keyboard.manager'
 local Keyboard = require 'class.keyboard'
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
@@ -5,6 +8,12 @@ local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 local GimmickManager = {}
 
 function GimmickManager:update( dt )
+    for i, v in ipairs( self._gimmicks ) do
+        if v == nil then
+            table.remove( self._gimmicks, i )
+        end
+    end
+    Timer:update( dt )
 end
 
 function GimmickManager:updateObserver( event )
@@ -17,9 +26,17 @@ function GimmickManager:getObserver()
     return self._observer
 end
 
-function GimmickManager:add( gimmick )
+function GimmickManager:add( gimmick, deleteaftersecond )
     GIManager:add( gimmick )
     table.insert( self._gimmicks, gimmick )
+    if deleteaftersecond then
+        local func = function()
+            print( gimmick )
+            gimmick:delete()
+            self:remove( gimmick )
+        end
+        Timer:after( deleteaftersecond, func )
+    end
 end
 
 function GimmickManager:remove( gimmick )

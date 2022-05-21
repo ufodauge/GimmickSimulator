@@ -9,6 +9,7 @@ FONT_HUD = love.graphics.newFont( 'resource//YuGothM.ttc', FONT_HUD_SIZE )
 
 FONT_REGULAR:setFilter( 'nearest', 'nearest' )
 FONT_DEBUG:setFilter( 'nearest', 'nearest' )
+FONT_HUD:setFilter( 'nearest', 'nearest' )
 
 -- hitbox radius
 HITBOX_RADIUS = 3

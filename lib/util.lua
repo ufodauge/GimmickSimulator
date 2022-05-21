@@ -11,5 +11,4 @@ function utils.print_with_shadow( text, x, y )
     love.graphics.print( text, x, y )
 end
 
-
 return utils
