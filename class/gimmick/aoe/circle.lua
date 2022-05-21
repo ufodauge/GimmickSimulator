@@ -7,13 +7,27 @@ setmetatable( CircleAoE, { __index = GameInstance } )
 function CircleAoE:update( dt )
     self._timer = self._timer + dt
 
-    if self._timer >= self.trigger_timing then
+    if self._timer >= self._triggertiming then
         self:trigger()
     end
 end
 
+function CircleAoE:trigger()
+
+end
+
+function CircleAoE:isTriggering()
+    return self._timer >= self._triggertiming and self._timer < self._triggertiming + TRIGGERED_AOE_DURATION
+end
+
 function CircleAoE:draw()
     local x, y = self:getPosition()
+
+    if self:isTriggering() then
+        love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g, self._colorTriggering.b, self._colorTriggering.a )
+    else
+        love.graphics.setColor( self._color.r, self._color.g, self._color.b, self._color.a )
+    end
 
     if self._ir and self._ir > 0 then
         local stencil = function()

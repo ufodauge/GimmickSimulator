@@ -4,6 +4,7 @@ local Player = require 'class.player'
 local SequenceManager = require 'class.sequence.manager'
 local Sequence = require 'class.sequence'
 local CircleAoE = require 'class.gimmick.aoe.circle'
+local RectangleAoE = require 'class.gimmick.aoe.rectangle'
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 
 local sandbox = {}

@@ -1,10 +1,10 @@
 -- Class
 local GameInstance = require 'class.gameinstance'
 
-local GimmickAoE = {}
-setmetatable( GimmickAoE, { __index = GameInstance } )
+local RectangleAoE = {}
+setmetatable( RectangleAoE, { __index = GameInstance } )
 
-function GimmickAoE:update( dt )
+function RectangleAoE:update( dt )
     self._timer = self._timer + dt
 
     if self._timer >= self.trigger_timing then
@@ -12,34 +12,45 @@ function GimmickAoE:update( dt )
     end
 end
 
-function GimmickAoE:draw()
-    local x, y = self:getPosition()
-
-    if self._ir and self._ir > 0 then
-        local stencil = function()
-            love.graphics.circle( 'fill', x, y, self._ir )
-        end
-        love.graphics.stencil( stencil, 'replace', 1 )
-    end
-
-    love.graphics.setStencilTest( 'equal', 0 )
-    love.graphics.circle( 'fill', x, y, self.radius )
-    love.graphics.setStencilTest()
+function RectangleAoE:isTriggering()
+    return self._timer >= self._triggertiming and self._timer < self._triggertiming + TRIGGERED_AOE_DURATION
 end
 
-function GimmickAoE:delete()
+function RectangleAoE:draw()
+    local x, y = self:getPosition()
+
+    love.graphics.push()
+
+    if self:isTriggering() then
+        love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g, self._colorTriggering.b, self._colorTriggering.a )
+    else
+        love.graphics.setColor( self._color.r, self._color.g, self._color.b, self._color.a )
+    end
+
+    love.graphics.translate( self._x, self._y )
+    love.graphics.rotate( self._rot )
+    love.graphics.rectangle( 'fill', -self._w / 2, -self._h / 2, self._w, self._h )
+    love.graphics.pop()
+end
+
+function RectangleAoE:delete()
     self:superDelete()
     self = nil
 end
 
-function GimmickAoE:new( args )
+function RectangleAoE:new( args )
     local obj = GameInstance:new( args )
-    setmetatable( obj, { __index = GimmickAoE } )
+    setmetatable( obj, { __index = RectangleAoE } )
 
     obj.superDelete = obj.delete
 
-    obj._x = args.x or 0
-    obj._y = args.y or 0
+    assert( args.sx and args.sy and args.tx and args.ty, 'RectangleAoE:new() requires sx, sy, tx, ty' )
+
+    obj._x = (args.sx + args.tx) / 2
+    obj._y = (args.sy + args.ty) / 2
+    obj._rot = math.atan2( args.ty - args.sy, args.tx - args.sx )
+    obj._w = args.w
+    obj._h = math.sqrt( (args.tx - args.sx) ^ 2 + (args.ty - args.sy) ^ 2 )
 
     obj._timer = 0 -- AoEが設置されてからの時間
     obj._prediction = args.prediction or 0 -- 予兆が消えるまでの時間
@@ -53,4 +64,4 @@ function GimmickAoE:new( args )
     return obj
 end
 
-return GimmickAoE
+return RectangleAoE
