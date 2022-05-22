@@ -9,6 +9,7 @@ local RectangleAoE = require 'class.gimmick.aoe.rectangle'
 local SpellGaugeHUD = require( 'class.hud.spellgauge' ):getInstance()
 local GimmickManager = require 'class.gimmick.manager'
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
+local lume = require( 'lib.lume' )
 
 local sandbox = {}
 
@@ -43,14 +44,43 @@ function sandbox:enter()
     -- 至天の陣：風槍
     sequenceManager:add( Sequence:new( function()
         SpellGaugeHUD:spell( { time = 3.67, mes = '至天の陣：風槍' } )
-        gimmickManager:add( FieldObject:new( { image = WOTH_WARRIOR_IMAGE, x = -300, y = 300, drawPriority = 5, scale = 0.3 } ), 7.39 )
-        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = 300, y = 300, drawPriority = 5, scale = 0.3 } ), 7.39 )
-        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = 300, y = -300, drawPriority = 5, scale = 0.3 } ), 7.39 )
-        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = -300, y = -300, drawPriority = 5, scale = 0.3 } ), 7.39 )
+        gimmickManager:add( FieldObject:new( { image = WOTH_WARRIOR_IMAGE, x = -220, y = 220, drawPriority = 5, scale = 0.25 } ), 7.39 )
+        gimmickManager:add( FieldObject:new( { image = WOTH_CASTER_IMAGE, x = 220, y = 220, drawPriority = 5, scale = 0.3 } ), 7.39 )
+        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = 220, y = -220, drawPriority = 5, scale = 0.3 } ), 7.39 )
+        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = -220, y = -220, drawPriority = 5, scale = 0.3 } ), 7.39 )
+        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = 0, y = -300, drawPriority = 5, scale = 0.3 } ), 7.39 )
         gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = -800, y = 0, drawPriority = 5, scale = 0.3 } ), 7.39 )
         gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = 800, y = 0, drawPriority = 5, scale = 0.3 } ), 7.39 )
         gimmickManager:add( FieldObject:new( { image = WOTH_THORDAN_IMAGE, x = 0, y = 0, drawPriority = 5, scale = 0.3 } ), 7.39 )
     end, 0.1 ) )
+
+    local nsew = lume.randomchoice( { -math.pi / 2, 0, math.pi / 2, math.pi } )
+    local dragon1_x, dragon1_y = math.cos( nsew ) * 600, math.sin( nsew ) * 600
+    local dragon2_x, dragon2_y = math.cos( nsew + math.pi / 2 ) * 600, math.sin( nsew + math.pi / 2 ) * 600
+    local dragon3_x, dragon3_y = math.cos( nsew - math.pi / 2 ) * 600, math.sin( nsew - math.pi / 2 ) * 600
+    local solider1_x, solider1_y = math.cos( nsew + math.pi / 6 ) * 600, math.sin( nsew + math.pi / 6 ) * 600
+    local solider2_x, solider2_y = math.cos( nsew - math.pi / 6 ) * 600, math.sin( nsew - math.pi / 6 ) * 600
+
+    -- 着地
+    sequenceManager:add( Sequence:new( function()
+        gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = dragon1_x, y = dragon1_y, drawPriority = 5, scale = 0.3 } ) )
+        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = solider1_x, y = solider1_y, drawPriority = 5, scale = 0.3 } ) )
+        gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = solider2_x, y = solider2_y, drawPriority = 5, scale = 0.3 } ) )
+    end, 9.0 ) )
+
+    -- 線とマーカー
+    sequenceManager:add( Sequence:new( function()
+    end, 9.78 ) )
+
+    -- ドラゴン着地
+    sequenceManager:add( Sequence:new( function()
+        gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = dragon2_x, y = dragon2_y, drawPriority = 5, scale = 0.3 } ) )
+        gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = dragon3_x, y = dragon3_y, drawPriority = 5, scale = 0.3 } ) )
+    end, 12.00 ) )
+
+    -- 雷デバフ付与
+    sequenceManager:add( Sequence:new( function()
+    end, 14.36 ) )
 
     GIManager:add( field )
     GIManager:add( playerManager:getPlayers() )

@@ -54,7 +54,7 @@ function GameInstanceManager:updateAll( dt )
 
     -- 消滅しているオブジェクトはリストから除外
     GameInstanceManager.instanceList = filter( GameInstanceManager.instanceList, function( obj )
-        return obj
+        return obj.getDrawPriority
     end )
 end
 

@@ -31,7 +31,6 @@ function GimmickManager:add( gimmick, deleteaftersecond )
     table.insert( self._gimmicks, gimmick )
     if deleteaftersecond then
         local func = function()
-            print( gimmick )
             gimmick:delete()
             self:remove( gimmick )
         end

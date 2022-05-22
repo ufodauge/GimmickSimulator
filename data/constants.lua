@@ -37,11 +37,13 @@ WOTH_GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
 -- objects
 WOTH_WARRIOR_IMAGE = love.graphics.newImage( 'resource/image/object/warrior.png', { mipmaps = true } )
 WOTH_SOLIDER_IMAGE = love.graphics.newImage( 'resource/image/object/lancer.png', { mipmaps = true } )
+WOTH_CASTER_IMAGE = love.graphics.newImage( 'resource/image/object/caster.png', { mipmaps = true } )
 WOTH_DRAGON_IMAGE = love.graphics.newImage( 'resource/image/object/dragon.png', { mipmaps = true } )
 WOTH_THORDAN_IMAGE = love.graphics.newImage( 'resource/image/object/thordan.png', { mipmaps = true } )
 
 WOTH_WARRIOR_IMAGE:setFilter( 'nearest', 'nearest' )
 WOTH_SOLIDER_IMAGE:setFilter( 'nearest', 'nearest' )
+WOTH_CASTER_IMAGE:setFilter( 'nearest', 'nearest' )
 WOTH_DRAGON_IMAGE:setFilter( 'nearest', 'nearest' )
 WOTH_THORDAN_IMAGE:setFilter( 'nearest', 'nearest' )
 
