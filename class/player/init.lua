@@ -118,10 +118,15 @@ function Player:getDebuffs()
   return unpack( self._debuffs )
 end
 
+function Player:getIcon()
+  return self._icon
+end
+
 function Player:new( args )
   local obj = GameInstance:new( args )
   obj.superDelete = obj.delete
 
+  obj._icon = args.icon
   obj._speed = PLAYER_SPEED
   obj._playable = args.playable or false
   obj._next = args.next
@@ -160,8 +165,7 @@ function Player:new( args )
     if f > 0 then
       local xb, yb = obj._mouseManager:getPositionBefore()
       local mx, my = love.mouse.getPosition()
-      local x, y = love.graphics.getWidth() / 2,
-                   love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT
+      local x, y = love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT
       local rotA = math.atan2( y - yb, x - xb )
       local rotB = math.atan2( y - my, x - mx )
       obj:rotateCamera( rotB - rotA )
@@ -174,8 +178,7 @@ function Player:new( args )
   obj._mouseManager = MouseManager:new()
   obj._mouseManager:add( mouseLeft, mouseScroll )
 
-  obj:setCameraCenter( love.graphics.getWidth() / 2,
-                       love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
+  obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
 
   return setmetatable( obj, {
     __index = Player,

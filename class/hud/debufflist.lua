@@ -15,9 +15,9 @@ end
 local function printWithBorder( text, x, y, lim, align, color )
   lim, align = lim or 400, align or 'right'
   -- F79A00
-  local r, g, b = color.r or (0xF7 / 255), color.g or (0x9A / 255),
-                  color.b or (0x00 / 255)
+  local r, g, b = color.r or (0xF7 / 255), color.g or (0x9A / 255), color.b or (0x00 / 255)
   love.graphics.setColor( r, g, b, 1 )
+  love.graphics.setFont( FONT_HUD )
   love.graphics.printf( text, x + 1, y + 1, lim, align )
   love.graphics.printf( text, x - 1, y + 1, lim, align )
   love.graphics.printf( text, x + 1, y - 1, lim, align )
@@ -41,9 +41,7 @@ function DebuffList:draw( _x, _y, _scale, _target )
     debuff:draw( x, y, scale )
 
     local remaintime = debuff:getRemainTime()
-    printWithBorder( ('%d'):format( remaintime + 1 ), x,
-                     y + scale * debuff:getHeight(), HUD_DEBUFF_LIST_ICON_WIDTH,
-                     'center', { r = 0x00, g = 0x00, b = 0x00 } )
+    printWithBorder( ('%d'):format( remaintime + 1 ), x, y + scale * debuff:getHeight(), HUD_DEBUFF_LIST_ICON_WIDTH, 'center', { r = 0x00, g = 0x00, b = 0x00 } )
   end
 end
 

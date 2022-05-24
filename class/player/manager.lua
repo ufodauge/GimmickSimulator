@@ -12,8 +12,7 @@ function Public:getInstance()
     PlayerManager._singleton = PlayerManager:new()
   end
 
-  assert( PlayerManager._singleton ~= nil,
-          'PlayerManager:getInstance() is not called yet.' )
+  assert( PlayerManager._singleton ~= nil, 'PlayerManager:getInstance() is not called yet.' )
   return PlayerManager._singleton
 end
 
@@ -32,7 +31,7 @@ end
 function PlayerManager:updateObserver( event )
   if event.name == 'reset' then
     self._changable = true
-    for i, player in ipairs( { self._players:getDebuffs() } ) do
+    for i, player in ipairs( self._players ) do
       player:removeDebuffs()
     end
   elseif event.name == 'start' then
