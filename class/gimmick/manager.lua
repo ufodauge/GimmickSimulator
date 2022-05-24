@@ -9,83 +9,73 @@ local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 local GimmickManager = {}
 
 function GimmickManager:update( dt )
-    for i, v in ipairs( self._gimmicks ) do
-        if v == nil then
-            table.remove( self._gimmicks, i )
-        end
+  for i, v in ipairs( self._gimmicks ) do
+    if v == nil then
+      table.remove( self._gimmicks, i )
     end
-    Timer:update( dt )
+  end
+  Timer:update( dt )
 end
 
 function GimmickManager:updateObserver( event )
-    if event.name == 'reset' then
-        self:deleteGimmicks()
-    end
+  if event.name == 'reset' then
+    self:deleteGimmicks()
+  end
 end
 
 function GimmickManager:getObserver()
-    return self._observer
+  return self._observer
 end
 
 function GimmickManager:add( gimmick, deleteaftersecond )
-    print( gimmick )
-    GIManager:add( gimmick )
-    table.insert( self._gimmicks, gimmick )
-    if deleteaftersecond then
-        local func = function()
-            self:remove( gimmick )
-        end
-        Timer:after( deleteaftersecond, func )
+  print( gimmick )
+  GIManager:add( gimmick )
+  table.insert( self._gimmicks, gimmick )
+  if deleteaftersecond then
+    local func = function()
+      self:remove( gimmick )
     end
+    Timer:after( deleteaftersecond, func )
+  end
 end
 
 function GimmickManager:remove( gimmick )
-    for i, g in pairs( self._gimmicks ) do
-        if g == gimmick then
-            table.remove( self._gimmicks, i )
-            GIManager:deleteInstance( g )
-            gimmick = nil
-            break
-        end
-    end
+  lume.remove( self._gimmicks, gimmick )
+  GIManager:remove( gimmick )
 end
 
 function GimmickManager:deleteGimmicks()
-    for i, g in pairs( self._gimmicks ) do
-        if g.delete then
-            self._gimmicks[i]:delete()
-            self._gimmicks[i] = nil
-        end
+  for i, g in pairs( self._gimmicks ) do
+    GIManager:remove( g )
+    if g.delete then
+      self._gimmicks[i]:delete()
+      self._gimmicks[i] = nil
     end
+  end
 
-    lume.clear( self._gimmicks )
+  lume.clear( self._gimmicks )
 end
 
 function GimmickManager:getGimmicks()
-    return unpack( self._gimmicks )
+  return unpack( self._gimmicks )
 end
 
 function GimmickManager:delete()
-    for i, gimmick in pairs( self._gimmicks ) do
-        if gimmick.delete then
-            gimmick:delete()
-            gimmick = nil
-        end
-    end
-    self._gimmicks = {}
+  self:deleteGimmicks()
+  self = nil
 end
 
 function GimmickManager:new()
-    local obj = {}
+  local obj = {}
 
-    obj._gimmicks = {}
+  obj._gimmicks = {}
 
-    return setmetatable( obj, {
-        __index = GimmickManager,
-        __tostring = function()
-            return 'GimmickManager'
-        end
-    } )
+  return setmetatable( obj, {
+    __index = GimmickManager,
+    __tostring = function()
+      return 'GimmickManager'
+    end
+  } )
 end
 
 return GimmickManager

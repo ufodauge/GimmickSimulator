@@ -23,38 +23,38 @@ local PlainDebug = require( 'lib.debug' ):getInstance()
 local GIManager = require( 'class.gameinstance.manager' ):getInstance()
 
 function love.load()
-    math.randomseed( os.time() )
+  math.randomseed( os.time() )
 
-    PlainDebug:Enable()
+  PlainDebug:Enable()
 
-    GIManager:DebugMode()
+  GIManager:DebugMode()
 
-    State.registerEvents()
-    State.switch( States.Sandbox2 );
+  State.registerEvents()
+  State.switch( States.Sandbox2 );
 end
 
 function love.update( dt )
-    -- PlainDebug
-    Lovebird.update()
-    PlainDebug:update( dt )
-    -- PlainDebug
+  -- PlainDebug
+  Lovebird.update()
+  PlainDebug:update( dt )
+  -- PlainDebug
 
-    GIManager:updateAll( dt )
+  GIManager:updateAll( dt )
 
-    if love.keyboard.isDown( 'escape' ) then
-        love.event.quit()
-    end
+  if love.keyboard.isDown( 'escape' ) then
+    love.event.quit()
+  end
 end
 
 function love.draw()
-    -- PlainDebug
-    PlainDebug:attachFreeCamera()
-    GIManager:drawAll()
-    PlainDebug:detachFreeCamera()
+  -- PlainDebug
+  PlainDebug:attachFreeCamera()
+  GIManager:drawAll()
+  PlainDebug:detachFreeCamera()
 
-    -- PlainDebug
-    love.graphics.setColor( 1, 1, 1, 1 )
-    PlainDebug:draw()
-    -- PlainDebug
+  -- PlainDebug
+  love.graphics.setColor( 1, 1, 1, 1 )
+  PlainDebug:draw()
+  -- PlainDebug
 end
 
