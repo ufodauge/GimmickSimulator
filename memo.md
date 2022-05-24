@@ -46,48 +46,5 @@
 1:58        最期の咆哮
 
 
-【英単語】
-　次の括弧内に合う英単語を埋めなさい。なお三単現の -s や過去形の -ed などは不規則動詞でない限り考慮しなくてもよい（例えば、 “crashed” が答えの場合、答えに “crash” と書いても構わないが、 “went” が答えの場合、 “go” と書くと不正解になる）。
-
-He (l     ) heartily. 彼は心から笑った
-He's able to (s     ) at misfortune. 彼は不運にもほほえむことができる
-Please (      ) my book. 私の本を返してください（戻る）
-Let's (b     ) our work. 仕事を始めよう（始める、始まる）
-You should (      ) at school by 8:30. 8時半までに学校に到着しなければならない
-This flower (      ) sweet. この花はいい香りがする
-She (      ) home for school at 8:30. 彼女は8時半に家を出て学校へ行く（出発する）
-(      ) a gift 贈り物を送る
-I (      ) her about her job. 私は彼女に彼女の仕事のことを尋ねた
-Time (      ) quickly. 時は急速に過ぎていく（渡す）
-It's bitter to the (      ). 味が苦い（～の味がする）
-He (      ) a dentist. 彼は歯科医になった
-Will you (      ) your bicycle to me? 自転車を貸してくれませんか
-a Greek (      ) ギリシャ神殿（寺院）
-a portable (      ) みこし（移動式の神社）
-a (      ) garden 宮殿（城）の庭
-(      ) for a dying person 臨終の床にある人のために祈る
-(      ) a person's promotion 人の昇進を祝う
-a Chinese (      ) 中華料理店（レストラン）
-a public (      ) 公立図書館（本屋）
-the (      ) of a table テーブルの角
-She looked at herself in the (      ). 彼女は鏡に自分の姿を映して見た
-sit in the (      ) of the class クラスの最前席に座る
-a building (      ) 建設計画（番組）
-wait a (      ).ちょっと待って（瞬間）
-a (      ) of applause 拍手かっさいのあらし（ハリケーン）
-the ever‐increasing scientific (      ) 絶え間なく増大する学術用語（語彙）
-a Russian (      ) ロシア語の文法
-a (      ) chair 台所（キッチン）用いす
-I will (      ) up 掃除します
-(      ) on one's head 逆立ちする
-There (      ) be no hurry, (      ) there? 急ぐ必要はないでしょう（どっちも同じ単語）
-I (      ) that (      ) 私はその匂いを嗅ぐ（どっちも同じ単語）
-the heat of (      ) 真昼の暑さ（正午）
-(      ) an hour 30分（一時間の半分）
-(      ) one's nails 爪を切る
-I'm going to (      ). 私は眠りに入る
-(      ) a person a hand 友人に手を貸す
-The closest (      ) of the train (      ). 最寄りの駅（鉄道駅）
-(      ) seat 座席（座椅子）
-(      ) in the rain 雨に濡れながら踊る
-I decided to buy that (      ) そのスマートフォンを購入することにしました
+table: 0x0209b01857e0   table: 0x0209ae490300   table: 0x0209b01efc18   table: 0x0209b01eee28   table: 0x0209ae4915f8   table: 0x0209ae491db0   table: 0x0209b01ef210   FieldObject     FieldObject     FieldObject     FieldObject     FieldObject     FieldObject     FieldObject     Player  Player  Player  Player  Player  Player  Player  Player  FieldObject
+table: 0x0209b01857e0   table: 0x0209ae491db0   table: 0x0209b01ef210   table: 0x0209b01eee28   table: 0x0209ae4915f8   table: 0x0209b01efc18   table: 0x0209ae490300   nil     nil     nil     nil     nil     nil     nil     nil     Player  Player  Player  Player  Player  Player  Player  Player  FieldObject

@@ -35,8 +35,7 @@ function SpellGauge:update( dt )
     end
 
     if self._timer >= self._limit then
-        self._timer = 0
-        self._started = false
+        self:interruption()
     end
 end
 
@@ -53,6 +52,12 @@ function SpellGauge:draw()
     end
 end
 
+function SpellGauge:updateObserver( event )
+    if event.name == 'reset' then
+        self:interruption()
+    end
+end
+
 function SpellGauge:delete()
     self:_superDelete()
     self = nil
@@ -65,12 +70,16 @@ function SpellGauge:spell( args )
     self._started = true
 end
 
+function SpellGauge:interruption()
+    self._timer = 0
+    self._started = false
+end
+
 function SpellGauge:new( args )
     args = args or {}
     local obj = GameInstance:new( args )
     obj._superDelete = obj.delete
 
-    setmetatable( obj, { __index = SpellGauge } )
     obj._isHud = true
 
     obj._limit = args.time or 100
@@ -79,7 +88,12 @@ function SpellGauge:new( args )
     obj._timer = 0
     obj._started = false
 
-    return obj
+    return setmetatable( obj, {
+        __index = SpellGauge,
+        __tostring = function()
+            return 'SpellGauge'
+        end
+    } )
 end
 
 return Public

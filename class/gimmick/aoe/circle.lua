@@ -58,8 +58,6 @@ function CircleAoE:new( args )
     local obj = GameInstance:new( args )
     obj.superDelete = obj.delete
 
-    setmetatable( obj, { __index = CircleAoE } )
-
     obj._x = args.x or 0
     obj._y = args.y or 0
     obj._r = args.r or 100 -- 円の半径
@@ -74,7 +72,12 @@ function CircleAoE:new( args )
     obj._color = { r = AOE_COLOR_RED, g = AOE_COLOR_GREEN, b = AOE_COLOR_BLUE, a = AOE_COLOR_ALPHA }
     obj._colorTriggering = { r = TRIGGERED_AOE_COLOR_RED, g = TRIGGERED_AOE_COLOR_GREEN, b = TRIGGERED_AOE_COLOR_BLUE, a = TRIGGERED_AOE_COLOR_ALPHA }
 
-    return obj
+    return setmetatable( obj, {
+        __index = CircleAoE,
+        __tostring = function()
+            return 'CircleAoE'
+        end
+    } )
 end
 
 return CircleAoE

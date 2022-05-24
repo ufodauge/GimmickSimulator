@@ -12,7 +12,6 @@ function KeyManager:add( ... )
     end
 end
 
-
 function KeyManager:remove( ... )
     local keyboards = { ... }
     for i, keyboard in ipairs( keyboards ) do
@@ -25,13 +24,11 @@ function KeyManager:remove( ... )
     end
 end
 
-
 function KeyManager:update( dt )
     for i, key in ipairs( self.keys ) do
         key:update( dt )
     end
 end
-
 
 -- 初期化処理
 function KeyManager:new()
@@ -40,10 +37,14 @@ function KeyManager:new()
 
     obj.keys = {}
 
-    setmetatable( obj, { __index = KeyManager } )
+    setmetatable( obj, {
+        __index = KeyManager,
+        __tostring = function()
+            return 'KeyManager'
+        end
+    } )
 
     return obj
 end
-
 
 return KeyManager

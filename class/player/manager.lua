@@ -35,13 +35,12 @@ end
 
 function PlayerManager:new()
     local obj = {}
-    setmetatable( obj, { __index = PlayerManager } )
 
     obj._players = {}
     obj._started = false
     obj._current = 1
 
-    local keySpace = Keyboard:new( 'g', function( dt, f )
+    local keyG = Keyboard:new( 'g', function( self, dt, f )
         if f == 0 then
             obj._players[obj._current]:nonplayable()
             obj._players[obj._current + 1]:playable()
@@ -49,9 +48,14 @@ function PlayerManager:new()
         end
     end )
     obj._keyManager = KeyManager:new()
-    obj._keyManager:add( keySpace )
+    obj._keyManager:add( keyG )
 
-    return obj
+    return setmetatable( obj, {
+        __index = PlayerManager,
+        __tostring = function()
+            return 'PlayerManager'
+        end
+    } )
 end
 
 return PlayerManager

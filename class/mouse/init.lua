@@ -57,9 +57,12 @@ function Mouse:new( key, func, premisekey )
 
     obj.premisekey = premisekey or nil
 
-    setmetatable( obj, { __index = Mouse } )
-
-    return obj
+    return setmetatable( obj, {
+        __index = Mouse,
+        __tostring = function()
+            return 'Mouse'
+        end
+    } )
 end
 
 return Mouse

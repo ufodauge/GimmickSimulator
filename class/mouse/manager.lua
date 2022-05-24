@@ -56,9 +56,12 @@ function MouseManager:new()
         end
     end
 
-    setmetatable( obj, { __index = MouseManager } )
-
-    return obj
+    return setmetatable( obj, {
+        __index = MouseManager,
+        __tostring = function()
+            return 'MouseManager'
+        end
+    } )
 end
 
 return MouseManager

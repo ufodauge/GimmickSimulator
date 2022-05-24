@@ -1,3 +1,5 @@
+local Lume = require 'lib.lume'
+
 local GameInstanceManager = {}
 local Public = {}
 
@@ -15,33 +17,18 @@ function Public:getInstance()
     return GameInstanceManager.singleton
 end
 
-function GameInstanceManager:add( obj, ... )
-    local args = { obj, ... }
-    if #args == 1 then
-        table.insert( GameInstanceManager.instanceList, obj )
-    else
-        for i = 1, #args do
-            table.insert( GameInstanceManager.instanceList, args[i] )
-        end
-    end
+function GameInstanceManager:add( ... )
+    Lume.push( self.instanceList, ... )
 
     -- マネージャーへの登録
     local function sort( a, b )
-        return a:getDrawPriority() < b:getDrawPriority()
+        return a._drawPriority < b._drawPriority
     end
 
-    table.sort( GameInstanceManager.instanceList, sort )
-end
-
-local function filter( tbl, func )
-    local out = {}
-    for k, v in pairs( tbl ) do
-        if func( v ) then
-            out[k] = v
-        end
-    end
-    return out
-
+    Lume.filter( GameInstanceManager.instanceList, function( v )
+        return v._drawPriority
+    end )
+    Lume.sort( GameInstanceManager.instanceList, sort )
 end
 
 function GameInstanceManager:updateAll( dt )
@@ -49,12 +36,12 @@ function GameInstanceManager:updateAll( dt )
         if obj.update then
             obj:update( dt )
         end
-
+        require( 'lib.debug' ):getInstance():setDebugInfo( tostring( obj ) )
     end
 
     -- 消滅しているオブジェクトはリストから除外
-    GameInstanceManager.instanceList = filter( GameInstanceManager.instanceList, function( obj )
-        return obj.getDrawPriority
+    Lume.filter( GameInstanceManager.instanceList, function( v )
+        return v._drawPriority
     end )
 end
 
@@ -94,6 +81,11 @@ function GameInstanceManager:deleteInstance( obj )
     print( 'GameInstanceManager:delete' )
     obj:delete()
     obj = nil
+
+    Lume.filter( GameInstanceManager.instanceList, function( v )
+        return v._drawPriority
+    end )
+
     collectgarbage()
 end
 

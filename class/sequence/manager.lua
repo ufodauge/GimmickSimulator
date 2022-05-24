@@ -19,17 +19,18 @@ function SequenceManager:start()
             sequence:start()
         end
     end
+    print( 'SequenceManager:start' )
 end
 
 function SequenceManager:reset()
     self._started = false
     for i, sequence in pairs( self._sequences ) do
         if sequence.reset then
-            sequence:stop()
             sequence:reset()
         end
     end
 
+    print( 'SequenceManager:reset' )
     self:notifyObservers( { name = 'reset' } )
 end
 
@@ -86,7 +87,6 @@ end
 
 function SequenceManager:new()
     local obj = {}
-    setmetatable( obj, { __index = SequenceManager } )
 
     obj._sequences = {}
     obj._observers = {}
@@ -95,8 +95,9 @@ function SequenceManager:new()
 
     local keySpace = Keyboard:new( 'space', function( self, dt, f )
         if f == 0 then
-            obj:reset()
-            if not obj:started() then
+            if obj._started then
+                obj:reset()
+            else
                 obj:start()
             end
         end
@@ -104,7 +105,12 @@ function SequenceManager:new()
     obj._keyManager = KeyManager:new()
     obj._keyManager:add( keySpace )
 
-    return obj
+    return setmetatable( obj, {
+        __index = SequenceManager,
+        tostring = function()
+            return 'SequenceManager'
+        end
+    } )
 end
 
 return SequenceManager

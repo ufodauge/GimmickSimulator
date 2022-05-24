@@ -24,7 +24,6 @@ function Sequence:start()
 end
 
 function Sequence:stop()
-    self._timer = 0
     self._started = false
 end
 
@@ -42,7 +41,7 @@ end
 
 function Sequence:reset()
     self._timer = 0
-    self._triggeredframe = 0
+    self._started = false
 end
 
 function Sequence:delete()
@@ -54,14 +53,17 @@ function Sequence:new( func, timing, args )
     local obj = GameInstance:new( args )
     obj.superDelete = obj.delete
 
-    setmetatable( obj, { __index = Sequence } )
-
     obj._func = func
     obj._timer = 0
     obj._timing = timing
     obj._triggeredframe = 0
 
-    return obj
+    return setmetatable( obj, {
+        __index = Sequence,
+        __tostring = function()
+            return 'Sequence'
+        end
+    } )
 end
 
 return Sequence

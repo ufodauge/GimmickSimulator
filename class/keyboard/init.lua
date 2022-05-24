@@ -35,7 +35,12 @@ function Keyboard:new( key, func, premisekey )
 
     obj.premisekey = premisekey or nil
 
-    setmetatable( obj, { __index = Keyboard } )
+    setmetatable( obj, {
+        __index = Keyboard,
+        __tostring = function()
+            return 'Keyboard'
+        end
+    } )
 
     return obj
 end

@@ -1,4 +1,5 @@
 local Timer = require( 'lib.timer' ):new()
+local lume = require( 'lib.lume' )
 -- local Timer = require( 'lib.hump.timer' ).new()
 
 local KeyManager = require 'class.keyboard.manager'
@@ -17,7 +18,7 @@ function GimmickManager:update( dt )
 end
 
 function GimmickManager:updateObserver( event )
-    if event.name == 'stop' then
+    if event.name == 'reset' then
         self:deleteGimmicks()
     end
 end
@@ -27,11 +28,11 @@ function GimmickManager:getObserver()
 end
 
 function GimmickManager:add( gimmick, deleteaftersecond )
+    print( gimmick )
     GIManager:add( gimmick )
     table.insert( self._gimmicks, gimmick )
     if deleteaftersecond then
         local func = function()
-            gimmick:delete()
             self:remove( gimmick )
         end
         Timer:after( deleteaftersecond, func )
@@ -42,6 +43,9 @@ function GimmickManager:remove( gimmick )
     for i, g in pairs( self._gimmicks ) do
         if g == gimmick then
             table.remove( self._gimmicks, i )
+            GIManager:deleteInstance( g )
+            gimmick = nil
+            break
         end
     end
 end
@@ -49,10 +53,12 @@ end
 function GimmickManager:deleteGimmicks()
     for i, g in pairs( self._gimmicks ) do
         if g.delete then
-            g:delete()
-            g = nil
+            self._gimmicks[i]:delete()
+            self._gimmicks[i] = nil
         end
     end
+
+    lume.clear( self._gimmicks )
 end
 
 function GimmickManager:getGimmicks()
@@ -71,11 +77,15 @@ end
 
 function GimmickManager:new()
     local obj = {}
-    setmetatable( obj, { __index = GimmickManager } )
 
     obj._gimmicks = {}
 
-    return obj
+    return setmetatable( obj, {
+        __index = GimmickManager,
+        __tostring = function()
+            return 'GimmickManager'
+        end
+    } )
 end
 
 return GimmickManager

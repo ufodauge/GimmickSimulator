@@ -67,8 +67,6 @@ function RectangleAoE:new( args )
     local obj = GameInstance:new( args )
     obj.superDelete = obj.delete
 
-    setmetatable( obj, { __index = RectangleAoE } )
-
     assert( args.sx and args.sy and args.tx and args.ty, 'RectangleAoE:new() requires sx, sy, tx, ty' )
 
     obj._x = (args.sx + args.tx) / 2
@@ -87,7 +85,12 @@ function RectangleAoE:new( args )
     obj._color = { r = AOE_COLOR_RED, g = AOE_COLOR_GREEN, b = AOE_COLOR_BLUE, a = AOE_COLOR_ALPHA }
     obj._colorTriggering = { r = TRIGGERED_AOE_COLOR_RED, g = TRIGGERED_AOE_COLOR_GREEN, b = TRIGGERED_AOE_COLOR_BLUE, a = TRIGGERED_AOE_COLOR_ALPHA }
 
-    return obj
+    return setmetatable( obj, {
+        __index = RectangleAoE,
+        __tostring = function()
+            return 'RectangleAoE'
+        end
+    } )
 end
 
 return RectangleAoE
