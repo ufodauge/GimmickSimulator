@@ -194,6 +194,11 @@ function sandbox:enter()
   sequenceManager:add( Sequence:new( function()
     local x, y = math.cos( nsew + math.pi ) * 600, math.sin( nsew + math.pi ) * 600
     gimmickManager:add( RectangleAoE:new( { sx = dragon1_x, sy = dragon1_y, tx = x, ty = y, w = 300, drawPriority = 5, prediction = 0.41 } ), 5 )
+
+    for i, player in ipairs( { playerManager:getPlayers() } ) do
+      local x, y = player:getPosition()
+      gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 50, drawPriority = 5, prediction = 21.70 - 15.55 } ), 5 )
+    end
   end, 15.55 ) )
 
   -- ドラゴン・真ん中二名着地
