@@ -46,6 +46,7 @@ function DebuffList:draw( _x, _y, _scale, _target )
 end
 
 function DebuffList:delete()
+  Lume.clear( self )
   self = nil
 end
 

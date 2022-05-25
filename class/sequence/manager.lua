@@ -1,5 +1,6 @@
 local KeyManager = require 'class.keyboard.manager'
 local Keyboard = require 'class.keyboard'
+local Lume = require 'lib.lume'
 
 local SequenceManager = {}
 
@@ -19,7 +20,6 @@ function SequenceManager:start()
       sequence:start()
     end
   end
-  print( 'SequenceManager:start' )
   self:notifyObservers( { name = 'start' } )
 end
 
@@ -31,7 +31,6 @@ function SequenceManager:reset()
     end
   end
 
-  print( 'SequenceManager:reset' )
   self:notifyObservers( { name = 'reset' } )
 end
 
@@ -61,7 +60,7 @@ function SequenceManager:addObserver( observer )
 end
 
 function SequenceManager:removeObserver( observer )
-  for i, g in pairs( self._observers ) do
+  for i, g in ipairs( self._observers ) do
     if g == observer then
       table.remove( self._observers, i )
     end
@@ -76,14 +75,22 @@ end
 -----------------------------
 
 function SequenceManager:deleteSequences()
-  for i, sequence in pairs( self._sequences ) do
+  if not self._sequences then
+    return
+  end
+  for i, sequence in ipairs( self._sequences ) do
     if sequence.delete then
       sequence:delete()
       sequence = nil
     end
   end
   self._sequences = {}
+end
 
+function SequenceManager:delete()
+  SequenceManager:deleteSequences()
+  Lume.clear( self )
+  self = nil
 end
 
 function SequenceManager:new()

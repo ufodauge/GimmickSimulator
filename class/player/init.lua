@@ -15,8 +15,10 @@ function Player:update( dt )
   if self:isPlayable() then
     self._keyManager:update( dt )
     self._mouseManager:update( dt )
-    self:moveCameraTo( self._x, self._y )
-    self:zoomCameraTo( self._zoomScale, true )
+    if self:isCameraRotatable() then
+      self:moveCameraTo( self._x, self._y )
+      self:zoomCameraTo( self._zoomScale, true )
+    end
   end
 
   self:move()
@@ -122,6 +124,14 @@ function Player:getIcon()
   return self._icon
 end
 
+function Player:toggleCameraRotatable()
+  self._cameraRotatable = not self._cameraRotatable
+end
+
+function Player:isCameraRotatable()
+  return self._cameraRotatable
+end
+
 function Player:new( args )
   local obj = GameInstance:new( args )
   obj.superDelete = obj.delete
@@ -135,6 +145,7 @@ function Player:new( args )
   obj._targetrot = math.pi / 2
   obj._dx = 0
   obj._dy = 0
+  obj._camerarotatable = false
 
   obj._debuffs = {}
 
@@ -158,22 +169,37 @@ function Player:new( args )
       obj:moveRight()
     end
   end )
+  local keyC = Keyboard:new( 'c', function( self, dt, f )
+    if f == 0 then
+      obj:toggleCameraRotatable()
+    end
+  end )
   obj._keyManager = KeyManager:new()
-  obj._keyManager:add( keyW, keyS, keyA, keyD )
+  obj._keyManager:add( keyW, keyS, keyA, keyD, keyC )
 
   local mouseLeft = Mouse:new( 'left', function( self, dt, f )
-    if f > 0 then
+    if f > 0 and obj:isCameraRotatable() then
       local xb, yb = obj._mouseManager:getPositionBefore()
       local mx, my = love.mouse.getPosition()
       local x, y = love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT
       local rotA = math.atan2( y - yb, x - xb )
       local rotB = math.atan2( y - my, x - mx )
       obj:rotateCamera( rotB - rotA )
+      obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
+    end
+
+    if obj:isCameraRotatable() then
+      obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
+    else
+      obj:moveCameraTo( 0, 0 )
+      obj:zoomCameraTo( 0.75 )
+      obj:rotateCameraTo( 0 )
+      obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 )
     end
   end )
   local mouseScroll = Mouse:new( 'wheel', function( self, x, y )
     -- 目的倍率が遠いほど速くズームする
-    obj._zoomScale = obj:getCameraZoomScale() + y * 0.1
+    obj._zoomScale = obj:getCameraZoomScale() + y * 0.12
   end )
   obj._mouseManager = MouseManager:new()
   obj._mouseManager:add( mouseLeft, mouseScroll )

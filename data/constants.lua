@@ -9,14 +9,14 @@ FONT_REGULAR:setFilter( 'nearest', 'nearest' )
 FONT_HUD:setFilter( 'nearest', 'nearest' )
 
 -- Image
-PLAYER_IMAGE_MT = love.graphics.newImage( 'resource/image/player/mt.png', { mipmaps = true } )
-PLAYER_IMAGE_ST = love.graphics.newImage( 'resource/image/player/st.png', { mipmaps = true } )
-PLAYER_IMAGE_H1 = love.graphics.newImage( 'resource/image/player/h1.png', { mipmaps = true } )
-PLAYER_IMAGE_H2 = love.graphics.newImage( 'resource/image/player/h2.png', { mipmaps = true } )
-PLAYER_IMAGE_D1 = love.graphics.newImage( 'resource/image/player/d1.png', { mipmaps = true } )
-PLAYER_IMAGE_D2 = love.graphics.newImage( 'resource/image/player/d2.png', { mipmaps = true } )
-PLAYER_IMAGE_D3 = love.graphics.newImage( 'resource/image/player/d3.png', { mipmaps = true } )
-PLAYER_IMAGE_D4 = love.graphics.newImage( 'resource/image/player/d4.png', { mipmaps = true } )
+PLAYER_IMAGE_MT = love.graphics.newImage( 'resource/image/player/MT.png', { mipmaps = true } )
+PLAYER_IMAGE_ST = love.graphics.newImage( 'resource/image/player/ST.png', { mipmaps = true } )
+PLAYER_IMAGE_H1 = love.graphics.newImage( 'resource/image/player/H1.png', { mipmaps = true } )
+PLAYER_IMAGE_H2 = love.graphics.newImage( 'resource/image/player/H2.png', { mipmaps = true } )
+PLAYER_IMAGE_D1 = love.graphics.newImage( 'resource/image/player/D1.png', { mipmaps = true } )
+PLAYER_IMAGE_D2 = love.graphics.newImage( 'resource/image/player/D2.png', { mipmaps = true } )
+PLAYER_IMAGE_D3 = love.graphics.newImage( 'resource/image/player/D3.png', { mipmaps = true } )
+PLAYER_IMAGE_D4 = love.graphics.newImage( 'resource/image/player/D4.png', { mipmaps = true } )
 
 PLAYER_IMAGE_MT:setFilter( 'nearest', 'nearest' )
 PLAYER_IMAGE_ST:setFilter( 'nearest', 'nearest' )
@@ -51,6 +51,25 @@ WOTH_GROUND_IMAGE = love.graphics.newImage( 'resource/image/field/warthoftheheav
 
 NIDHOGG_GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
 WOTH_GROUND_IMAGE:setFilter( 'nearest', 'nearest' )
+
+-- field marker
+FIELD_MARKER_1_IMAGE = love.graphics.newImage( 'resource/image/object/fm_1.png', { mipmaps = true } )
+FIELD_MARKER_2_IMAGE = love.graphics.newImage( 'resource/image/object/fm_2.png', { mipmaps = true } )
+FIELD_MARKER_3_IMAGE = love.graphics.newImage( 'resource/image/object/fm_3.png', { mipmaps = true } )
+FIELD_MARKER_4_IMAGE = love.graphics.newImage( 'resource/image/object/fm_4.png', { mipmaps = true } )
+FIELD_MARKER_A_IMAGE = love.graphics.newImage( 'resource/image/object/fm_A.png', { mipmaps = true } )
+FIELD_MARKER_B_IMAGE = love.graphics.newImage( 'resource/image/object/fm_B.png', { mipmaps = true } )
+FIELD_MARKER_C_IMAGE = love.graphics.newImage( 'resource/image/object/fm_C.png', { mipmaps = true } )
+FIELD_MARKER_D_IMAGE = love.graphics.newImage( 'resource/image/object/fm_D.png', { mipmaps = true } )
+
+FIELD_MARKER_1_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_2_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_3_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_4_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_A_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_B_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_C_IMAGE:setFilter( 'nearest', 'nearest' )
+FIELD_MARKER_D_IMAGE:setFilter( 'nearest', 'nearest' )
 
 -- objects
 WOTH_WARRIOR_IMAGE = love.graphics.newImage( 'resource/image/object/warrior.png', { mipmaps = true } )

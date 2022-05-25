@@ -55,6 +55,7 @@ function PlayerManager:delete()
     end
   end
   Lume.clear( self._players )
+  self = nil
 end
 
 function PlayerManager:new()

@@ -13,8 +13,9 @@ require 'data.constants'
 -- state
 States = {}
 States.Dummy = require 'state.dummy'
-States.Sandbox = require 'state.sandbox'
+-- States.Sandbox = require 'state.sandbox'
 States.Sandbox2 = require 'state.sandbox2'
+States.Warthoftheheavens = require 'state.woth'
 
 -- PlainDebug
 local PlainDebug = require( 'lib.debug' ):getInstance()
@@ -27,10 +28,10 @@ function love.load()
 
   PlainDebug:Enable()
 
-  GIManager:DebugMode()
+  -- GIManager:DebugMode()
 
   State.registerEvents()
-  State.switch( States.Sandbox2 );
+  State.switch( States.Warthoftheheavens );
 end
 
 function love.update( dt )

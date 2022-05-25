@@ -1,5 +1,5 @@
 local Timer = require( 'lib.timer' ):new()
-local lume = require( 'lib.lume' )
+local Lume = require( 'lib.lume' )
 -- local Timer = require( 'lib.hump.timer' ).new()
 
 local KeyManager = require 'class.keyboard.manager'
@@ -40,7 +40,7 @@ function GimmickManager:add( gimmick, deleteaftersecond )
 end
 
 function GimmickManager:remove( gimmick )
-  lume.remove( self._gimmicks, gimmick )
+  Lume.remove( self._gimmicks, gimmick )
   GIManager:remove( gimmick )
 end
 
@@ -53,7 +53,7 @@ function GimmickManager:deleteGimmicks()
     end
   end
 
-  lume.clear( self._gimmicks )
+  Lume.clear( self._gimmicks )
 end
 
 function GimmickManager:getGimmicks()
@@ -62,6 +62,7 @@ end
 
 function GimmickManager:delete()
   self:deleteGimmicks()
+  Lume.clear( self )
   self = nil
 end
 

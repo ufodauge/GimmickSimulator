@@ -42,6 +42,10 @@ function GameInstance:rotateCamera( angle )
   self._camera:rotate( angle )
 end
 
+function GameInstance:rotateCameraTo( angle )
+  self._camera:rotateTo( angle )
+end
+
 function GameInstance:getCameraRotation()
   return self._camera:rotation()
 end
@@ -113,6 +117,11 @@ end
 function GameInstance:move( x, y )
   self._x = self._x + x
   self._y = self._y + y
+end
+
+function GameInstance:moveTo( x, y )
+  self._x = x
+  self._y = y
 end
 
 function GameInstance:rotate( rot )

@@ -13,8 +13,7 @@ function Public:getInstance()
     GameInstanceManager.singleton = GameInstanceManager:new()
   end
 
-  assert( GameInstanceManager.singleton ~= nil,
-          'GameInstanceManager:getInstance() is not called yet.' )
+  assert( GameInstanceManager.singleton ~= nil, 'GameInstanceManager:getInstance() is not called yet.' )
   return GameInstanceManager.singleton
 end
 
@@ -84,7 +83,10 @@ end
 
 function GameInstanceManager:deleteInstanceAll()
   for i, obj in pairs( GameInstanceManager.instanceList ) do
-    obj:delete()
+    if obj.delete then
+      obj:delete()
+    end
+    Lume.clear( obj )
     obj = nil
   end
   GameInstanceManager.instanceList = {}

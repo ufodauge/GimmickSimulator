@@ -41,6 +41,7 @@ function PartyList:draw( _x, _y, _scale )
 end
 
 function PartyList:delete()
+  Lume.clear( self )
   self = nil
 end
 

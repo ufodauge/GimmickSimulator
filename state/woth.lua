@@ -19,7 +19,7 @@ local lume = require( 'lib.lume' )
 
 local sandbox = {}
 
-sandbox.name = 'sandbox2'
+sandbox.name = 'Warthoftheheavens'
 
 local field = nil
 local playerManager = nil
@@ -85,6 +85,15 @@ function sandbox:enter()
     } ) )
   end, 0 ) )
 
+  -- ほかプレイヤー画面外へ
+  sequenceManager:add( Sequence:new( function()
+    for _, player in ipairs( { playerManager:getPlayers() } ) do
+      if not player:isPlayable() then
+        player:moveTo( 0, 5000 )
+      end
+    end
+  end, 0.1 ) )
+
   -- 至天の陣：風槍
   sequenceManager:add( Sequence:new( function()
     SpellGaugeHUD:spell( { time = 3.67, mes = '至天の陣：風槍' } )
@@ -136,43 +145,46 @@ function sandbox:enter()
     debuff2 = lume.shuffle( { 'thunder', 'thunder', 'none', 'none', 'none', 'none', 'none', 'none' } )
 
     for i, deb in ipairs( debuff1 ) do
-      if deb == 'chain1' then
-        gimmickManager:add( LineMarker:new( {
-          image = WOTH_CHAIN_IMAGE,
-          sx = solider1_x,
-          sy = solider1_y,
-          target = select( i, playerManager:getPlayers() ),
-          triggertiming = 15.55 - 9.83,
-          func = function()
-            local tx, ty = select( i, playerManager:getPlayers() ):getPosition()
-            gimmickManager:add( RectangleAoE:new( { sx = solider1_x, sy = solider1_y, tx = tx, ty = ty, w = 300, drawPriority = 5, prediction = 0.41 } ), 5 )
-          end,
-          drawPriority = 15
-        } ) )
-      elseif deb == 'chain2' then
-        gimmickManager:add( LineMarker:new( {
-          image = WOTH_CHAIN_IMAGE,
-          sx = solider2_x,
-          sy = solider2_y,
-          target = select( i, playerManager:getPlayers() ),
-          triggertiming = 15.55 - 9.83,
-          func = function()
-            local tx, ty = select( i, playerManager:getPlayers() ):getPosition()
-            gimmickManager:add( RectangleAoE:new( { sx = solider2_x, sy = solider2_y, tx = tx, ty = ty, w = 300, drawPriority = 5, prediction = 0.41 } ), 5 )
-          end,
-          drawPriority = 15
-        } ) )
-      elseif deb == 'blue' then
-        gimmickManager:add( Marker:new( {
-          image = WOTH_BLUE_MARKER_IMAGE,
-          target = select( i, playerManager:getPlayers() ),
-          triggertiming = 15.55 - 9.83,
-          func = function()
-            local x, y = select( i, playerManager:getPlayers() ):getPosition()
-            gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 500, drawPriority = 5, prediction = 0.41 } ), 5 )
-          end,
-          drawPriority = 15
-        } ) )
+      local pl = select( i, playerManager:getPlayers() )
+      if pl:isPlayable() then
+        if deb == 'chain1' then
+          gimmickManager:add( LineMarker:new( {
+            image = WOTH_CHAIN_IMAGE,
+            sx = solider1_x,
+            sy = solider1_y,
+            target = pl,
+            triggertiming = 15.55 - 9.83,
+            func = function()
+              local tx, ty = pl:getPosition()
+              gimmickManager:add( RectangleAoE:new( { sx = solider1_x, sy = solider1_y, tx = tx, ty = ty, w = 300, drawPriority = 5, prediction = 0.41 } ), 5 )
+            end,
+            drawPriority = 15
+          } ) )
+        elseif deb == 'chain2' then
+          gimmickManager:add( LineMarker:new( {
+            image = WOTH_CHAIN_IMAGE,
+            sx = solider2_x,
+            sy = solider2_y,
+            target = pl,
+            triggertiming = 15.55 - 9.83,
+            func = function()
+              local tx, ty = pl:getPosition()
+              gimmickManager:add( RectangleAoE:new( { sx = solider2_x, sy = solider2_y, tx = tx, ty = ty, w = 300, drawPriority = 5, prediction = 0.41 } ), 5 )
+            end,
+            drawPriority = 15
+          } ) )
+        elseif deb == 'blue' then
+          gimmickManager:add( Marker:new( {
+            image = WOTH_BLUE_MARKER_IMAGE,
+            target = pl,
+            triggertiming = 15.55 - 9.83,
+            func = function()
+              local x, y = pl:getPosition()
+              gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 500, drawPriority = 5, prediction = 0.41 } ), 5 )
+            end,
+            drawPriority = 15
+          } ) )
+        end
       end
     end
 
@@ -215,7 +227,8 @@ function sandbox:enter()
   -- 緑デバフ
   sequenceManager:add( Sequence:new( function()
     for i, deb in ipairs( debuff1 ) do
-      if deb == 'green' then
+      local pl = select( i, playerManager:getPlayers() )
+      if deb == 'green' and pl:isPlayable() then
         gimmickManager:add( Marker:new( {
           image = WOTH_GREEN_MARKER_IMAGE,
           target = select( i, playerManager:getPlayers() ),
@@ -235,8 +248,11 @@ function sandbox:enter()
   sequenceManager:add( Sequence:new( function()
     for i, player in ipairs( { playerManager:getPlayers() } ) do
       local x, y = player:getPosition()
-      -- local angle = math.atan2( y - dragon2_y, x - dragon2_x )
-      gimmickManager:add( RectangleAoE:new( { sx = 0, sy = 0, tx = x, ty = y, w = 50, drawPriority = 5 } ), 5 )
+      if player:isPlayable() then
+        local angle = math.atan2( y, x )
+        local tx, ty = math.cos( angle ) * 600, math.sin( angle ) * 600
+        gimmickManager:add( RectangleAoE:new( { sx = 0, sy = 0, tx = tx, ty = ty, w = 50, drawPriority = 5 } ), 5 )
+      end
     end
   end, 21.70 ) )
 
@@ -322,6 +338,13 @@ function sandbox:draw()
 end
 
 function sandbox:leave()
+  playerManager:delete()
+  sequenceManager:delete()
+  gimmickManager:delete()
+  SpellGaugeHUD:delete()
+  DebuffListHUD:delete()
+  PartyListHUD:delete()
+  field:delete()
   GIManager:deleteInstanceAll()
 end
 

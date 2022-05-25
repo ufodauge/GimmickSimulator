@@ -46,5 +46,9 @@
 1:58        最期の咆哮
 
 
-table: 0x0209b01857e0   table: 0x0209ae490300   table: 0x0209b01efc18   table: 0x0209b01eee28   table: 0x0209ae4915f8   table: 0x0209ae491db0   table: 0x0209b01ef210   FieldObject     FieldObject     FieldObject     FieldObject     FieldObject     FieldObject     FieldObject     Player  Player  Player  Player  Player  Player  Player  Player  FieldObject
-table: 0x0209b01857e0   table: 0x0209ae491db0   table: 0x0209b01ef210   table: 0x0209b01eee28   table: 0x0209ae4915f8   table: 0x0209b01efc18   table: 0x0209ae490300   nil     nil     nil     nil     nil     nil     nil     nil     Player  Player  Player  Player  Player  Player  Player  Player  FieldObject
+~~マーカー~~
+~~途中で槍消す~~
+~~カメラ固定~~
+でかいAoEの間隔
+リキッドは究極残す
+ほかプレイヤー削除
