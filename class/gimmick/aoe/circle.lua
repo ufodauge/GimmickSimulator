@@ -20,8 +20,7 @@ function CircleAoE:trigger()
 end
 
 function CircleAoE:isTriggering()
-  return self._timer >= self._triggertiming and self._timer <
-             self._triggertiming + TRIGGERED_AOE_DURATION
+  return self._timer >= self._triggertiming and self._timer < self._triggertiming + TRIGGERED_AOE_DURATION
 end
 
 function CircleAoE:isPredicting()
@@ -31,28 +30,27 @@ end
 function CircleAoE:draw()
   local x, y = self:getPosition()
 
-  love.graphics.push()
   if self:isTriggering() then
-    love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g,
-                            self._colorTriggering.b, self._colorTriggering.a )
+    love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g, self._colorTriggering.b, self._colorTriggering.a )
   elseif self:isPredicting() then
-    love.graphics.setColor( self._color.r, self._color.g, self._color.b,
-                            self._color.a )
+    love.graphics.setColor( self._color.r, self._color.g, self._color.b, self._color.a )
   else
     love.graphics.setColor( 0, 0, 0, 0 )
   end
 
-  if self._ir > 0 then
-    local stencil = function()
-      love.graphics.circle( 'fill', x, -y, self._ir )
-    end
-    love.graphics.stencil( stencil, 'replace', 1 )
-  end
+  -- if self._ir > 0 then
+  --   local stencil = function()
+  --     love.graphics.circle( 'fill', x, -y, self._ir )
+  --   end
+  --   love.graphics.stencil( stencil, 'replace', 1 )
+  -- end
 
-  love.graphics.setStencilTest( 'equal', 0 )
-  love.graphics.circle( 'fill', x, -y, self._r )
-  love.graphics.setStencilTest()
-  love.graphics.pop()
+  -- love.graphics.setStencilTest( 'equal', 0 )
+  -- love.graphics.circle( 'fill', x, -y, self._r )
+  -- love.graphics.setStencilTest()
+  love.graphics.setLineWidth( self._r - self._ir )
+  love.graphics.circle( 'line', x, -y, (self._r + self._ir) / 2 )
+  love.graphics.setLineWidth( 1 )
 end
 
 function CircleAoE:delete()
@@ -73,22 +71,11 @@ function CircleAoE:new( args )
   obj._prediction = args.prediction or 0 -- 予兆が消えるまでの時間
   obj._triggertiming = 0 -- 当たり判定が確定するまでの時間
 
-  obj._triggertiming = obj._prediction and obj._prediction +
-                           AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED
+  obj._triggertiming = obj._prediction and obj._prediction + AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED
 
-  local c = args.color and { Lume.color( args.color ) } or nil
-  obj._color = c or {
-    r = AOE_COLOR_RED,
-    g = AOE_COLOR_GREEN,
-    b = AOE_COLOR_BLUE,
-    a = AOE_COLOR_ALPHA
-  }
-  obj._colorTriggering = {
-    r = TRIGGERED_AOE_COLOR_RED,
-    g = TRIGGERED_AOE_COLOR_GREEN,
-    b = TRIGGERED_AOE_COLOR_BLUE,
-    a = TRIGGERED_AOE_COLOR_ALPHA
-  }
+  local c = args.color and { Lume.color( args.color ) } or { AOE_COLOR_RED, AOE_COLOR_GREEN, AOE_COLOR_BLUE }
+  obj._color = { r = c[1], g = c[2], b = c[3], a = args.alpha or AOE_COLOR_ALPHA }
+  obj._colorTriggering = { r = TRIGGERED_AOE_COLOR_RED, g = TRIGGERED_AOE_COLOR_GREEN, b = TRIGGERED_AOE_COLOR_BLUE, a = TRIGGERED_AOE_COLOR_ALPHA }
 
   return setmetatable( obj, {
     __index = CircleAoE,

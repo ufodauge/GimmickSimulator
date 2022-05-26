@@ -32,7 +32,7 @@ function love.load()
   -- GIManager:DebugMode()
 
   State.registerEvents()
-  State.switch( States.Deathoftheheavens );
+  State.switch( States.Deathoftheheavens )
 end
 
 function love.update( dt )

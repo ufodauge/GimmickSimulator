@@ -69,6 +69,7 @@ end
 function GameInstance:getPosition()
   return self._x, self._y
 end
+
 function GameInstance:getX()
   return self._x
 end
@@ -145,8 +146,8 @@ function GameInstance:draw()
 
     love.graphics.push()
     love.graphics.translate( tx, ty )
-    love.graphics.scale( self:getScale() )
     love.graphics.rotate( -self:getRotation() )
+    love.graphics.scale( self:getScale() )
     love.graphics.setColor( 1, 1, 1, 1 )
     love.graphics.draw( self:getImage(), -w / 2, -h / 2 )
     love.graphics.pop()

@@ -30,63 +30,14 @@ function sandbox:enter()
   field = Field:new( { image = WOTH_GROUND_IMAGE, x = 0, y = 0 } )
 
   playerManager = PlayerManager:new()
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_MT,
-    icon = PLAYER_IMAGE_ICON_MT,
-    drawPriority = 10,
-    x = -350,
-    y = 0,
-    playable = true
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_ST,
-    icon = PLAYER_IMAGE_ICON_ST,
-    drawPriority = 10,
-    x = -250,
-    y = 0
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_H1,
-    icon = PLAYER_IMAGE_ICON_H1,
-    drawPriority = 10,
-    x = -150,
-    y = 0
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_H2,
-    icon = PLAYER_IMAGE_ICON_H2,
-    drawPriority = 10,
-    x = -50,
-    y = 0
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_D1,
-    icon = PLAYER_IMAGE_ICON_D1,
-    drawPriority = 10,
-    x = 50,
-    y = 0
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_D2,
-    icon = PLAYER_IMAGE_ICON_D2,
-    drawPriority = 10,
-    x = 150,
-    y = 0
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_D3,
-    icon = PLAYER_IMAGE_ICON_D3,
-    drawPriority = 10,
-    x = 250,
-    y = 0
-  } ) )
-  playerManager:add( Player:new( {
-    image = PLAYER_IMAGE_D4,
-    icon = PLAYER_IMAGE_ICON_D4,
-    drawPriority = 10,
-    x = 350,
-    y = 0
-  } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_MT, icon = PLAYER_IMAGE_ICON_MT, drawPriority = 10, x = -350, y = 0, playable = true } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_ST, icon = PLAYER_IMAGE_ICON_ST, drawPriority = 10, x = -250, y = 0 } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_H1, icon = PLAYER_IMAGE_ICON_H1, drawPriority = 10, x = -150, y = 0 } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_H2, icon = PLAYER_IMAGE_ICON_H2, drawPriority = 10, x = -50, y = 0 } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_D1, icon = PLAYER_IMAGE_ICON_D1, drawPriority = 10, x = 50, y = 0 } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_D2, icon = PLAYER_IMAGE_ICON_D2, drawPriority = 10, x = 150, y = 0 } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_D3, icon = PLAYER_IMAGE_ICON_D3, drawPriority = 10, x = 250, y = 0 } ) )
+  playerManager:add( Player:new( { image = PLAYER_IMAGE_D4, icon = PLAYER_IMAGE_ICON_D4, drawPriority = 10, x = 350, y = 0 } ) )
 
   gimmickManager = GimmickManager:new()
   sequenceManager = SequenceManager:new()
@@ -100,34 +51,10 @@ function sandbox:enter()
 
   -- マーカー、および初期化
   sequenceManager:add( Sequence:new( function()
-    gimmickManager:add( FieldObject:new( {
-      image = FIELD_MARKER_A_IMAGE,
-      x = 0,
-      y = 550,
-      scale = 1.5,
-      drawPriority = 8
-    } ) )
-    gimmickManager:add( FieldObject:new( {
-      image = FIELD_MARKER_B_IMAGE,
-      x = 550,
-      y = 0,
-      scale = 1.5,
-      drawPriority = 8
-    } ) )
-    gimmickManager:add( FieldObject:new( {
-      image = FIELD_MARKER_C_IMAGE,
-      x = 0,
-      y = -550,
-      scale = 1.5,
-      drawPriority = 8
-    } ) )
-    gimmickManager:add( FieldObject:new( {
-      image = FIELD_MARKER_D_IMAGE,
-      x = -550,
-      y = 0,
-      scale = 1.5,
-      drawPriority = 8
-    } ) )
+    gimmickManager:add( FieldObject:new( { image = FIELD_MARKER_A_IMAGE, x = 0, y = 550, scale = 1.5, drawPriority = 8 } ) )
+    gimmickManager:add( FieldObject:new( { image = FIELD_MARKER_B_IMAGE, x = 550, y = 0, scale = 1.5, drawPriority = 8 } ) )
+    gimmickManager:add( FieldObject:new( { image = FIELD_MARKER_C_IMAGE, x = 0, y = -550, scale = 1.5, drawPriority = 8 } ) )
+    gimmickManager:add( FieldObject:new( { image = FIELD_MARKER_D_IMAGE, x = -550, y = 0, scale = 1.5, drawPriority = 8 } ) )
     gimmickManager:add( FieldObject:new( {
       image = FIELD_MARKER_1_IMAGE,
       x = 550 * math.cos( math.pi / 4 ),
@@ -158,7 +85,8 @@ function sandbox:enter()
     } ) )
     for _, player in ipairs( { playerManager:getPlayers() } ) do
       if not player:isPlayable() then
-        player:moveTo( 0, 0 )
+        local randx, randy = math.random( -100, 100 ), math.random( -100, 100 )
+        player:moveTo( randx, randy )
       end
     end
   end, 0 ) )
@@ -175,139 +103,57 @@ function sandbox:enter()
   -- 至天の陣：死刻
   sequenceManager:add( Sequence:new( function()
     SpellGaugeHUD:spell( { time = 3.5, mes = '至天の陣：死刻' } )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_WARRIOR_IMAGE,
-      x = -220,
-      y = 220,
-      drawPriority = 5,
-      scale = 0.25
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_CASTER_IMAGE,
-      x = 220,
-      y = 220,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_SOLIDER_IMAGE,
-      x = 220,
-      y = -220,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_SOLIDER_IMAGE,
-      x = -220,
-      y = -220,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_SOLIDER_IMAGE,
-      x = 0,
-      y = -300,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_DRAGON_IMAGE,
-      x = -800,
-      y = 0,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_DRAGON_IMAGE,
-      x = 800,
-      y = 0,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_THORDAN_IMAGE,
-      x = 0,
-      y = 0,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_WARRIOR_IMAGE, x = -220, y = 220, drawPriority = 5, scale = 0.25 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_CASTER_IMAGE, x = 220, y = 220, drawPriority = 5, scale = 0.3 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = 220, y = -220, drawPriority = 5, scale = 0.3 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = -220, y = -220, drawPriority = 5, scale = 0.3 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = 0, y = -300, drawPriority = 5, scale = 0.3 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = -800, y = 0, drawPriority = 5, scale = 0.3 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = 800, y = 0, drawPriority = 5, scale = 0.3 } ), 7.2 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_THORDAN_IMAGE, x = 0, y = 0, drawPriority = 5, scale = 0.3 } ), 7.2 )
   end, 0.1 ) )
 
   local nsew = nil
-  local dragon1_x, dragon1_y = nil, nil
-  local dragon2_x, dragon2_y = nil, nil
-  local dragon3_x, dragon3_y = nil, nil
-  local caster_x, caster_y = nil, nil
-  local dragonseye_x, dragonseye_y = nil, nil
-  local warrior_x, warrior_y = nil, nil
+  local dragon1_x, dragon1_y = 0, 0
+  local dragon2_x, dragon2_y = 0, 0
+  local dragon3_x, dragon3_y = 0, 0
+  local caster_x, caster_y = 0, 0
+  local warrior_x, warrior_y = 0, 0
+
+  local nsew2 = nil
+  local thordan_x, thordan_y = 0, 0
+  local nsew3 = nil
+  local dragonseye_x, dragonseye_y = 0, 0
 
   -- 着地
   sequenceManager:add( Sequence:new( function()
     nsew = lume.randomchoice( { -math.pi / 2, 0, math.pi / 2, math.pi } )
     dragon1_x, dragon1_y = math.cos( nsew ) * 700, math.sin( nsew ) * 700 -- black
-    dragon2_x, dragon2_y = math.cos( nsew - math.pi / 3 ) * 700,
-                           math.sin( nsew - math.pi / 3 ) * 700 -- white
-    dragon3_x, dragon3_y = math.cos( nsew - math.pi * 2 / 3 ) * 700,
-                           math.sin( nsew - math.pi * 2 / 3 ) * 700 -- blue
-    warrior_x, warrior_y = math.cos( nsew ) * 400, math.sin( nsew ) * 400 -- warrior
-    caster_x, caster_y = math.cos( nsew + math.pi / 2 ) * 700,
-                         math.sin( nsew + math.pi / 2 ) * 700 -- solider?
+    dragon2_x, dragon2_y = math.cos( nsew - math.pi / 3 ) * 700, math.sin( nsew - math.pi / 3 ) * 700 -- white
+    dragon3_x, dragon3_y = math.cos( nsew - math.pi * 2 / 3 ) * 700, math.sin( nsew - math.pi * 2 / 3 ) * 700 -- blue
+    warrior_x, warrior_y = math.cos( nsew ) * 243, math.sin( nsew ) * 243 -- warrior
+    caster_x, caster_y = math.cos( nsew + math.pi / 2 ) * 700, math.sin( nsew + math.pi / 2 ) * 700 -- solider?
 
-    gimmickManager:add( FieldObject:new( {
-      image = DOTH_BLACK_DRAGON_IMAGE,
-      x = dragon1_x,
-      y = dragon1_y,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 20.3 - 8.3 )
-    gimmickManager:add( FieldObject:new( {
-      image = DOTH_WHITE_DRAGON_IMAGE,
-      x = dragon2_x,
-      y = dragon2_y,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 20.3 - 8.3 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_DRAGON_IMAGE,
-      x = dragon3_x,
-      y = dragon3_y,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 20.3 - 8.3 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_WARRIOR_IMAGE,
-      x = warrior_x,
-      y = warrior_y,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 20.3 - 8.3 )
-    gimmickManager:add( FieldObject:new( {
-      image = WOTH_CASTER_IMAGE,
-      x = caster_x,
-      y = caster_y,
-      drawPriority = 5,
-      scale = 0.3
-    } ), 20.3 - 8.3 )
+    nsew2 = lume.randomchoice( { 0, math.pi / 4, math.pi / 2, math.pi / 4 * 3, math.pi, math.pi / 4 * 5, math.pi / 2 * 3, math.pi / 4 * 7 } )
+    nsew3 = lume.randomchoice( { 0, math.pi / 4, -math.pi / 4 } )
+    thordan_x, thordan_y = math.cos( nsew2 ) * 750, math.sin( nsew2 ) * 750 -- thordan
+    dragonseye_x, dragonseye_y = math.cos( nsew2 + nsew3 - math.pi ) * 750, math.sin( nsew2 + nsew3 - math.pi ) * 750 -- dragonseye
+
+    gimmickManager:add( FieldObject:new( { image = DOTH_BLACK_DRAGON_IMAGE, x = dragon1_x, y = dragon1_y, drawPriority = 5, scale = 0.3 } ), 20.3 - 8.3 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_SOLIDER_IMAGE, x = dragon2_x, y = dragon2_y, drawPriority = 5, scale = 0.3 } ), 20.3 - 8.3 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_DRAGON_IMAGE, x = dragon3_x, y = dragon3_y, drawPriority = 5, scale = 0.3 } ), 20.3 - 8.3 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_WARRIOR_IMAGE, x = warrior_x, y = warrior_y, drawPriority = 5, scale = 0.3 } ), 20.3 - 8.3 )
+    gimmickManager:add( FieldObject:new( { image = DOTH_WHITE_DRAGON_IMAGE, x = caster_x, y = caster_y, drawPriority = 5, scale = 0.3 } ), 20.3 - 8.3 )
+    gimmickManager:add( FieldObject:new( { image = WOTH_THORDAN_IMAGE, x = thordan_x, y = thordan_y, drawPriority = 4, scale = 0.3 } ) )
+    gimmickManager:add( FieldObject:new( { image = DOTH_DRAGON_EYE_IMAGE, x = dragonseye_x, y = dragonseye_y, drawPriority = 4 } ) )
   end, 8.3 ) )
 
   -- 誰に何を付与するかを決める
   local debuff1 = nil
 
-  -- 死の宣告とダイナモ詠唱
+  -- 死の宣告
   sequenceManager:add( Sequence:new( function()
-    SpellGaugeHUD:spell(
-        { time = 18.4 - 12.7, mes = 'ヘヴィインパクト' } )
-    gimmickManager:add( CircleAoE:new( {
-      x = warrior_x,
-      y = warrior_y,
-      r = 200,
-      prediction = 18.4 - 11.3,
-      drawPriority = 5
-    } ), 18.4 - 12.7 + 1 )
-
-    debuff1 = lume.shuffle( {
-      'cirA', 'cirB', 'crsA', 'crsB', 'triA', 'triB', 'sqeA', 'sqeB'
-    } )
+    debuff1 = lume.shuffle( { 'cirA', 'cirB', 'crsA', 'crsB', 'triA', 'triB', 'sqeA', 'sqeB' } )
 
     for i, deb in ipairs( debuff1 ) do
       local pl = select( i, playerManager:getPlayers() )
@@ -327,97 +173,67 @@ function sandbox:enter()
     end
   end, 11.3 ) )
 
-  -- Heavy Impact 2
+  -- Heavy Impact 1
   sequenceManager:add( Sequence:new( function()
+    SpellGaugeHUD:spell( { time = 18.4 - 12.7 - AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED, mes = 'ヘヴィインパクト' } )
     gimmickManager:add( CircleAoE:new( {
       x = warrior_x,
       y = warrior_y,
-      r = 400,
-      ir = 200,
+      r = 162,
+      prediction = 18.4 - 12.7 - AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED,
       drawPriority = 5
-    } ), 1 )
+    } ), 18.4 - 12.7 + 1 )
+  end, 12.7 ) )
+
+  -- Heavy Impact 2
+  sequenceManager:add( Sequence:new( function()
+    gimmickManager:add( CircleAoE:new( { x = warrior_x, y = warrior_y, r = 314, ir = 162, drawPriority = 5 } ), 1 )
   end, 20.3 ) )
 
   -- Heavy Impact 3
   sequenceManager:add( Sequence:new( function()
-    gimmickManager:add( CircleAoE:new( {
-      x = warrior_x,
-      y = warrior_y,
-      r = 600,
-      ir = 400,
-      drawPriority = 5
-    } ), 1 )
+    gimmickManager:add( CircleAoE:new( { x = warrior_x, y = warrior_y, r = 476, ir = 314, drawPriority = 5 } ), 1 )
   end, 22.2 ) )
 
   -- Heavy Impact 4
   sequenceManager:add( Sequence:new( function()
-    gimmickManager:add( CircleAoE:new( {
-      x = warrior_x,
-      y = warrior_y,
-      r = 800,
-      ir = 600,
-      drawPriority = 5
-    } ), 1 )
+    gimmickManager:add( CircleAoE:new( { x = warrior_x, y = warrior_y, r = 638, ir = 476, drawPriority = 5 } ), 1 )
   end, 24.0 ) )
 
   -- Heavy Impact 5
   sequenceManager:add( Sequence:new( function()
-    gimmickManager:add( CircleAoE:new( {
-      x = warrior_x,
-      y = warrior_y,
-      r = 1000,
-      ir = 800,
-      drawPriority = 5
-    } ), 1 )
+    gimmickManager:add( CircleAoE:new( { x = warrior_x, y = warrior_y, r = 800, ir = 638, drawPriority = 5 } ), 1 )
   end, 26.0 ) )
 
   -- 白AoEなどなど
   sequenceManager:add( Sequence:new( function()
-    local x, y = math.cos( nsew + math.pi ) * 1500,
-                 math.sin( nsew + math.pi ) * 1500
-    gimmickManager:add( RectangleAoE:new( {
-      sx = dragon1_x,
-      sy = dragon1_y,
-      tx = x,
-      ty = y,
-      w = 600,
-      drawPriority = 5
-    } ), 1 )
+    local x, y = math.cos( nsew + math.pi ) * 1500, math.sin( nsew + math.pi ) * 1500
+    gimmickManager:add( RectangleAoE:new( { sx = dragon1_x, sy = dragon1_y, tx = x, ty = y, w = 600, drawPriority = 5 } ), 1 )
 
-    x, y = math.cos( nsew + math.pi * 2 / 3 ) * 1500,
-           math.sin( nsew + math.pi * 2 / 3 ) * 1500
-    gimmickManager:add( RectangleAoE:new( {
-      sx = dragon2_x,
-      sy = dragon2_y,
-      tx = x,
-      ty = y,
-      w = 150,
-      drawPriority = 5
-    } ), 1 )
+    x, y = math.cos( nsew + math.pi * 2 / 3 ) * 1500, math.sin( nsew + math.pi * 2 / 3 ) * 1500
+    gimmickManager:add( RectangleAoE:new( { sx = dragon2_x, sy = dragon2_y, tx = x, ty = y, w = 150, drawPriority = 5 } ), 1 )
 
-    x, y = math.cos( nsew + math.pi / 3 ) * 1500,
-           math.sin( nsew + math.pi / 3 ) * 1500
-    gimmickManager:add( RectangleAoE:new( {
-      sx = dragon3_x,
-      sy = dragon3_y,
-      tx = x,
-      ty = y,
-      w = 150,
-      drawPriority = 5
-    } ), 1 )
+    x, y = math.cos( nsew + math.pi / 3 ) * 1500, math.sin( nsew + math.pi / 3 ) * 1500
+    gimmickManager:add( RectangleAoE:new( { sx = dragon3_x, sy = dragon3_y, tx = x, ty = y, w = 150, drawPriority = 5 } ), 1 )
 
+    local death_p = 0
+    local pos = {
+      { math.cos( nsew + math.pi * 7 / 16 ) * 550, math.sin( nsew + math.pi * 7 / 16 ) * 550 },
+      { math.cos( nsew + math.pi * 3 / 16 ) * 550, math.sin( nsew + math.pi * 3 / 16 ) * 550 },
+      { math.cos( nsew - math.pi * 3 / 16 ) * 550, math.sin( nsew - math.pi * 3 / 16 ) * 550 },
+      { math.cos( nsew - math.pi * 7 / 16 ) * 550, math.sin( nsew - math.pi * 7 / 16 ) * 550 }
+    }
     for i, deb in ipairs( debuff1 ) do
       if lume.find( { 'crsA', 'crsB', 'triB', 'sqeB' }, deb ) then
+        death_p = death_p + 1
         local pl = select( i, playerManager:getPlayers() )
-        local x, y = pl:getPosition()
-        gimmickManager:add( CircleAoE:new( {
-          x = x,
-          y = y,
-          r = 100,
-          drawPriority = 5,
-          color = '#FFFFFF',
-          prediction = 35.8 - 20.3
-        } ), 5 )
+        local x, y = 0, 0
+        if pl:isPlayable() then
+          x, y = pl:getPosition()
+        else
+          x, y = unpack( pos[death_p] )
+        end
+        gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 100, drawPriority = 5, color = '#FFFFFF', alpha = 0.5, prediction = 35.8 - 20.3 } ), 35.8 - 20.3 )
       end
     end
   end, 20.3 ) )
@@ -431,12 +247,7 @@ function sandbox:enter()
         target = pl,
         func = function()
           local x, y = pl:getPosition()
-          gimmickManager:add( CircleAoE:new( {
-            x = x,
-            y = y,
-            r = 200,
-            drawPriority = 5
-          } ), 5 )
+          gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 200, drawPriority = 5 } ), 5 )
         end,
         drawPriority = 15
       } )
@@ -449,13 +260,7 @@ function sandbox:enter()
   sequenceManager:add( Sequence:new( function()
     for i, pl in ipairs( { playerManager:getPlayers() } ) do
       local x, y = pl:getPosition()
-      gimmickManager:add( CircleAoE:new( {
-        x = x,
-        y = y,
-        r = 50,
-        drawPriority = 5,
-        prediction = 27.0 - 21.3
-      } ), 7 )
+      gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 50, color = '#616B07', drawPriority = 5, prediction = 27.0 - 21.3 } ), 7 )
     end
   end, 21.3 ) )
 
@@ -501,8 +306,7 @@ function sandbox:enter()
   sequenceManager:add( Sequence:new( function()
     for i, pl in ipairs( { playerManager:getPlayers() } ) do
       local x, y = pl:getPosition()
-      gimmickManager:add( CircleAoE:new(
-                              { x = x, y = y, r = 100, drawPriority = 5 } ), 1 )
+      gimmickManager:add( CircleAoE:new( { x = x, y = y, r = 100, drawPriority = 5 } ), 1 )
     end
   end, 35.8 ) )
 
