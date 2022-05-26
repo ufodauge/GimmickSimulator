@@ -13,12 +13,21 @@ setmetatable( Player, { __index = GameInstance } )
 
 function Player:update( dt )
   if self:isPlayable() then
-    self._keyManager:update( dt )
+    if not self:isStunned() or not self:isBlowing() then
+      self._keyManager:update( dt )
+    end
     self._mouseManager:update( dt )
     if self:isCameraRotatable() then
       self:moveCameraTo( self._x, self._y )
       self:zoomCameraTo( self._zoomScale, true )
     end
+  end
+
+  if self:isStunned() then
+    self._stun = self._stun - dt
+  end
+  if self:isBlowing() then
+    self._blow = self._blow - dt
   end
 
   self:move()
@@ -53,19 +62,49 @@ function Player:updateDirention( dt )
 end
 
 function Player:move()
-  local denominator = math.sqrt( self._dx * self._dx + self._dy * self._dy )
-  if denominator == 0 then
-    return
+  -- 吹き飛ばし時：移動は制御され、回転もできない
+  if self:isBlowing() then
+    local dx = self._blowdx * (self._blow / self._blowstart) /
+                   love.timer.getFPS()
+    local dy = self._blowdy * (self._blow / self._blowstart) /
+                   love.timer.getFPS()
+
+    self._x = self._x + dx
+    self._y = self._y + dy
+  else
+    local denominator = math.sqrt( self._dx * self._dx + self._dy * self._dy )
+    if denominator == 0 then
+      return
+    end
+
+    local dx = self._dx * PLAYER_SPEED / denominator
+    local dy = self._dy * PLAYER_SPEED / denominator
+
+    self._x = self._x + dx
+    self._y = self._y + dy
+    self._targetrot = math.atan2( self._dy, self._dx )
   end
 
-  self._targetrot = math.atan2( self._dy, self._dx )
-
-  local dx = self._dx * PLAYER_SPEED / denominator
-  local dy = self._dy * PLAYER_SPEED / denominator
-
-  self._x = self._x + dx
-  self._y = self._y + dy
   self._dx, self._dy = 0, 0
+end
+
+function Player:stun( sec )
+  self._stun = sec
+end
+
+function Player:isStunned()
+  return self._stun > 0
+end
+
+function Player:blowBack( dx, dy, sec )
+  self._blow = sec
+  self._blowstart = sec
+  self._blowdx = dx
+  self._blowdy = dy
+end
+
+function Player:isBlowing()
+  return self._blow > 0
 end
 
 function Player:moveForward()
@@ -146,6 +185,10 @@ function Player:new( args )
   obj._dx = 0
   obj._dy = 0
   obj._camerarotatable = false
+  obj._stun = 0
+  obj._blow = 0
+  obj._blowstart = 0
+  obj._blowdx, obj._blowdy = 0, 0
 
   obj._debuffs = {}
 
@@ -181,20 +224,24 @@ function Player:new( args )
     if f > 0 and obj:isCameraRotatable() then
       local xb, yb = obj._mouseManager:getPositionBefore()
       local mx, my = love.mouse.getPosition()
-      local x, y = love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT
+      local x, y = love.graphics.getWidth() / 2,
+                   love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT
       local rotA = math.atan2( y - yb, x - xb )
       local rotB = math.atan2( y - my, x - mx )
       obj:rotateCamera( rotB - rotA )
-      obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
+      obj:setCameraCenter( love.graphics.getWidth() / 2,
+                           love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
     end
 
     if obj:isCameraRotatable() then
-      obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
+      obj:setCameraCenter( love.graphics.getWidth() / 2,
+                           love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
     else
       obj:moveCameraTo( 0, 0 )
       obj:zoomCameraTo( 0.75 )
       obj:rotateCameraTo( 0 )
-      obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 )
+      obj:setCameraCenter( love.graphics.getWidth() / 2,
+                           love.graphics.getHeight() / 2 )
     end
   end )
   local mouseScroll = Mouse:new( 'wheel', function( self, x, y )
@@ -204,7 +251,8 @@ function Player:new( args )
   obj._mouseManager = MouseManager:new()
   obj._mouseManager:add( mouseLeft, mouseScroll )
 
-  obj:setCameraCenter( love.graphics.getWidth() / 2, love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
+  obj:setCameraCenter( love.graphics.getWidth() / 2,
+                       love.graphics.getHeight() / 2 + PLAYER_CAMERA_TILT )
 
   return setmetatable( obj, {
     __index = Player,

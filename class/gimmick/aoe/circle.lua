@@ -1,3 +1,6 @@
+-- lib
+local Lume = require( 'lib.lume' )
+
 -- Class
 local GameInstance = require 'class.gameinstance'
 
@@ -17,7 +20,8 @@ function CircleAoE:trigger()
 end
 
 function CircleAoE:isTriggering()
-  return self._timer >= self._triggertiming and self._timer < self._triggertiming + TRIGGERED_AOE_DURATION
+  return self._timer >= self._triggertiming and self._timer <
+             self._triggertiming + TRIGGERED_AOE_DURATION
 end
 
 function CircleAoE:isPredicting()
@@ -29,9 +33,11 @@ function CircleAoE:draw()
 
   love.graphics.push()
   if self:isTriggering() then
-    love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g, self._colorTriggering.b, self._colorTriggering.a )
+    love.graphics.setColor( self._colorTriggering.r, self._colorTriggering.g,
+                            self._colorTriggering.b, self._colorTriggering.a )
   elseif self:isPredicting() then
-    love.graphics.setColor( self._color.r, self._color.g, self._color.b, self._color.a )
+    love.graphics.setColor( self._color.r, self._color.g, self._color.b,
+                            self._color.a )
   else
     love.graphics.setColor( 0, 0, 0, 0 )
   end
@@ -67,10 +73,22 @@ function CircleAoE:new( args )
   obj._prediction = args.prediction or 0 -- 予兆が消えるまでの時間
   obj._triggertiming = 0 -- 当たり判定が確定するまでの時間
 
-  obj._triggertiming = obj._prediction and obj._prediction + AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED
+  obj._triggertiming = obj._prediction and obj._prediction +
+                           AOE_TIMELAG_BETWEEN_UNDISPLAYED_AND_TRIGGERED
 
-  obj._color = { r = AOE_COLOR_RED, g = AOE_COLOR_GREEN, b = AOE_COLOR_BLUE, a = AOE_COLOR_ALPHA }
-  obj._colorTriggering = { r = TRIGGERED_AOE_COLOR_RED, g = TRIGGERED_AOE_COLOR_GREEN, b = TRIGGERED_AOE_COLOR_BLUE, a = TRIGGERED_AOE_COLOR_ALPHA }
+  local c = args.color and { Lume.color( args.color ) } or nil
+  obj._color = c or {
+    r = AOE_COLOR_RED,
+    g = AOE_COLOR_GREEN,
+    b = AOE_COLOR_BLUE,
+    a = AOE_COLOR_ALPHA
+  }
+  obj._colorTriggering = {
+    r = TRIGGERED_AOE_COLOR_RED,
+    g = TRIGGERED_AOE_COLOR_GREEN,
+    b = TRIGGERED_AOE_COLOR_BLUE,
+    a = TRIGGERED_AOE_COLOR_ALPHA
+  }
 
   return setmetatable( obj, {
     __index = CircleAoE,
